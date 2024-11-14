@@ -90,6 +90,8 @@ CREATE TABLE schedule(
     start DATETIME NOT NULL,
     end DATETIME NOT NULL,
 
+    CONSTRAINT pk_programs_content PRIMARY KEY (class, course, start),
+
     FOREIGN KEY fk_schedule_room(room) REFERENCES rooms(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY fk_schedule_class(class) REFERENCES class(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY fk_schedule_teacher(teacher) REFERENCES teachers(id) ON DELETE CASCADE ON UPDATE CASCADE,
