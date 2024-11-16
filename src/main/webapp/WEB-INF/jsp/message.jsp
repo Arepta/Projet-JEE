@@ -3,9 +3,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test Page</title>
+    <title>${title}</title>
 </head>
 <body>
-    <p>${data}</p>
+
+    ${message}
+
+   
 </body>
 </html>

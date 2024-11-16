@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.edu.model.Student;
@@ -14,9 +15,14 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
+    private PasswordEncoder passwordEncoder;
+
+
     @Autowired // IMPORTANT
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, PasswordEncoder passwordEncoder) {
         this.studentRepository = studentRepository;
+        this.passwordEncoder = passwordEncoder;
+    
     }
 
     public List<Student> getAllStudents() {
@@ -28,32 +34,29 @@ public class StudentService {
     }
 
     public Optional<Student> getStudentsByEmail(String email) {
-        return this.studentRepository.findStudentByEmail(email);  //build in
+        return this.studentRepository.findByEmail(email);  //build in
     }
 
-    public Optional<Student> getStudentsByCredential(String email, String password) {
-        return this.studentRepository.findStudentByCredential(email, password);  //build in
-    }
-
-    public Student createStudent(Student Student) {
-        return this.studentRepository.save(Student);  //build in
+    public Student createStudent(Student StudentDetails) {
+        StudentDetails.setPassword(passwordEncoder.encode(StudentDetails.getPassword()));
+        return this.studentRepository.save(StudentDetails);  //build in
     }
 
     public Student updateStudent(Long id, Student StudentDetails) {
         Optional<Student> optionalStudent = this.studentRepository.findById(id);
 
         if (optionalStudent.isPresent()) {
-            Student Student = optionalStudent.get();
+            Student updatedStudent = optionalStudent.get();
 
-            Student.setEmail(StudentDetails.getEmail());
-            Student.setPassword(StudentDetails.getPassword());
-            Student.setName(StudentDetails.getName());
-            Student.setSurname(StudentDetails.getSurname());
-            Student.setDateOfBirth(StudentDetails.getDateOfBirth());
-            Student.setLevel(StudentDetails.getLevel());
-            Student.setStudentClass(StudentDetails.getStudentClass());
+            updatedStudent.setEmail(StudentDetails.getEmail());
+            updatedStudent.setPassword(passwordEncoder.encode(StudentDetails.getPassword()));
+            updatedStudent.setName(StudentDetails.getName());
+            updatedStudent.setSurname(StudentDetails.getSurname());
+            updatedStudent.setDateOfBirth(StudentDetails.getDateOfBirth());
+            updatedStudent.setLevel(StudentDetails.getLevel());
+            updatedStudent.setStudentClass(StudentDetails.getStudentClass());
 
-            return this.studentRepository.save(Student);
+            return this.studentRepository.save(updatedStudent);
         }
 
         return null;

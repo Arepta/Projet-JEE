@@ -70,6 +70,7 @@ CREATE TABLE students(
     dateofbirth DATE NOT NULL,
     level INT UNSIGNED NULL DEFAULT NULL,
     class INT UNSIGNED NULL DEFAULT NULL,
+    confirm TINYINT(1) NOT NULL DEFAULT 0,
 
     FOREIGN KEY fk_students_level(level) REFERENCES class_level(id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY fk_students_class(class) REFERENCES class(id) ON DELETE SET NULL ON UPDATE CASCADE

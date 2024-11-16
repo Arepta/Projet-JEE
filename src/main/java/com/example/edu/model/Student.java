@@ -2,6 +2,7 @@ package com.example.edu.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "students")
@@ -35,20 +36,26 @@ public class Student {
     @JoinColumn(name = "class", foreignKey = @ForeignKey(name = "fk_students_class"), 
         referencedColumnName = "id", nullable = true)
     private ClassM studentClass;
+
+    @Column(name = "confirm", nullable = false)
+    private boolean confirm;
     
     // Constructors
     
     public Student() {
     }
     
-    public Student(String email, String name, String surname, ClassLevel level, LocalDate dateOfBirth, ClassM studentClass) {
+    public Student(String email, String password, String name, String surname, ClassLevel level, String dateOfBirth, ClassM studentClass) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         this.id = null;
         this.email = email;
+        this.password = password;
         this.name = name;
         this.surname = surname;
-        this.dateOfBirth = dateOfBirth;
+        this.dateOfBirth =  LocalDate.parse(dateOfBirth, formatter);
         this.level = level;
         this.studentClass = studentClass;
+        this.confirm = false;
     }
     
     // Getters and Setters
@@ -118,9 +125,17 @@ public class Student {
         this.studentClass = studentClass;
     }
 
+    public boolean getConfirm() {
+        return confirm;
+    }
+    
+    public void setConfirm(boolean confirm) {
+        this.confirm = confirm;
+    }
+
     @Override
     public String toString(){
 
-        return this.id+": "+this.email+"  "+this.password+", "+this.name+", "+this.surname+", "+this.level.getName()+", "+this.studentClass+" |";
+        return this.id+": "+this.email+"  "+this.password+", "+this.name+", "+this.surname+", "+this.level+", "+this.studentClass+" |";
     }
 }

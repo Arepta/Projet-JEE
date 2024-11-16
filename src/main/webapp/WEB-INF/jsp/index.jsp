@@ -3,9 +3,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test Page</title>
+    <title>Index Page</title>
 </head>
 <body>
-    <p>${data}</p>
+    <h1>INDEX PUBLIC</h1>
+    <p>Welcome</p>
+
+    <a href="./register">S'inscrire</a>
+    <a href="./login">Se connecter</a>
 </body>
 </html>
