@@ -1,6 +1,8 @@
 package com.example.edu.model;
 
 import jakarta.persistence.*;
+
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -135,7 +137,24 @@ public class Student {
 
     @Override
     public String toString(){
+        String JSON = "";
+        Class<?> clazz = this.getClass();
+        for (Field field : clazz.getDeclaredFields()) {
+            try{
+                field.setAccessible(true);
+                if(field.get(this) == null || (!(field.get(this) instanceof String) && !(field.get(this) instanceof LocalDate)) ){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + field.get(this) + ",");
+                }
+                else{
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\": \"" + field.get(this) + "\",");
+                }
+                
+            } 
+            catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
 
-        return this.id+": "+this.email+"  "+this.password+", "+this.name+", "+this.surname+", "+this.level+", "+this.studentClass+" |";
+        return "{"+JSON.substring(0, JSON.length()-1)+"}";
     }
 }

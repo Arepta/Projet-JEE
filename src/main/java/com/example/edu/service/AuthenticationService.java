@@ -35,6 +35,16 @@ public class AuthenticationService implements UserDetailsService {
                 .roles("ADMIN") // Assign Admin role
                 .build();
         }
+
+        // Check Student Repository
+        // Optional<Student> student = studentRepository.findByEmail(email);
+        // if (student.isPresent() && student.get().getConfirm()) {
+        //     return User.builder()
+        //         .username(student.get().getEmail())
+        //         .password(student.get().getPassword()) // Password from the database (hashed)
+        //         .roles("TEACHHER") // Assign Student role
+        //         .build();
+        // }
         
         // Check Student Repository
         Optional<Student> student = studentRepository.findByEmail(email);

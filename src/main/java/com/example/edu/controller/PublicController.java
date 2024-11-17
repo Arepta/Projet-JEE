@@ -65,6 +65,7 @@ public class PublicController {
         }
 
         model.addAttribute("error", requestValidator.getErrors());
+        model.addAttribute("old", requestValidator.getValidatedValue());
 
         return "register";  
     }

@@ -20,9 +20,12 @@ public class Validator {
 
     private Map<String, String> fieldRules;
 
+    private MultiValueMap<String, String> request;
+
     private List<String> validatedField;
     private Map<String, String> failedField;
     private List<String> remainingField;
+
     
     public Validator(Map<String, String> rules){
         this.fieldRules = new HashMap<>(rules);
@@ -47,6 +50,7 @@ public class Validator {
 
     public boolean validateRequest(MultiValueMap<String, String> requestContent) throws unknownRuleException{
 
+        this.request = requestContent;
         this.validatedField.clear();
         this.failedField.clear();
         this.remainingField.clear();
@@ -112,6 +116,16 @@ public class Validator {
 
     public List<String> getValidatedField(){
         return this.validatedField;
+    }
+
+    public Map<String, String> getValidatedValue(){
+        Map<String, String> VV = new HashMap<>();
+        
+        for (String field : this.validatedField) {
+            VV.put(field, this.request.getFirst(field));
+        }
+
+        return VV;
     }
 
     public Map<String, String> getErrors(){
