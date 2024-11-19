@@ -37,7 +37,7 @@ public class AdminController {
     private final ClassesService classesService;
 
 
-    private final  Map<String, String> fieldToLabel = Map.of( //translate attribute name to label name (More readable) [OPTIONAL]
+    private final  Map<String, String> student_fieldToLabel = Map.of( //translate attribute name to label name (More readable) [OPTIONAL]
         "id","ID",
         "email","E-mail",
         "surname","Nom",
@@ -48,7 +48,7 @@ public class AdminController {
         "confirm","Inscription confirmée"
     );
 
-    private final List<String> fieldDisplayedOnLine = Arrays.asList("id", "email", "surname", "name", "confirm"); // fields displayed on the line that represent the data [OPTIONAL]
+    private final List<String> student_fieldDisplayedOnLine = Arrays.asList("id", "email", "surname", "name", "confirm"); // fields displayed on the line that represent the data [OPTIONAL]
 
     @Autowired
     public AdminController(StudentService studentService, ClassLevelService classLevelService, ClassesService classesService) {
@@ -81,7 +81,7 @@ public class AdminController {
         model.addAttribute("levelListe", allLevel);
         model.addAttribute("classesListe", allClasses);
 
-        Table.setup(model, "Élèves", new ArrayList<Object>(studentService.getAllStudents()), this.fieldToLabel, this.fieldDisplayedOnLine);
+        Table.setup(model, "Élèves", new ArrayList<Object>(studentService.getAllStudents()), this.student_fieldToLabel, this.student_fieldDisplayedOnLine);
         return "admin/student";  
     }
 
@@ -143,7 +143,7 @@ public class AdminController {
             //failed validation
             model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
             model.addAttribute("messageType", "error");
-            Table.setupWithError(model, "", new ArrayList<Object>(studentService.getAllStudents()), this.fieldToLabel, false, requestContentValidator); //setup table to build with error
+            Table.setupWithError(model, "", new ArrayList<Object>(studentService.getAllStudents()), this.student_fieldToLabel, false, requestContentValidator); //setup table to build with error
         }
 
         // Transfer all attributes from the Model to RedirectAttributes
@@ -209,7 +209,7 @@ public class AdminController {
             //failed validation
             model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
             model.addAttribute("messageType", "error");
-            Table.setupWithError(model, "", new ArrayList<Object>(studentService.getAllStudents()), this.fieldToLabel, true, requestContentValidator); //setup table to build with error
+            Table.setupWithError(model, "", new ArrayList<Object>(studentService.getAllStudents()), this.student_fieldToLabel, true, requestContentValidator); //setup table to build with error
         }
 
         // Transfer all attributes from the Model to RedirectAttributes
