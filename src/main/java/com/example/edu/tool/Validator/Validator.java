@@ -132,6 +132,15 @@ public class Validator {
         return this.failedField;
     }
 
+    public List<String> getErrorsMessages(){
+        List<String> msg = new ArrayList<>();
+
+        for(String key : this.failedField.keySet()){
+            msg.add(this.failedField.get(key));
+        }
+        return msg;
+    }
+
     public List<String> getRemainingField(){
         return this.remainingField;
     }

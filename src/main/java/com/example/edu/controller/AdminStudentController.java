@@ -1,6 +1,5 @@
 package com.example.edu.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,7 @@ import com.example.edu.service.ClassLevelService;
 import com.example.edu.service.ClassesService;
 import com.example.edu.service.StudentService;
 import com.example.edu.tool.Security;
-import com.example.edu.tool.Table;
+import com.example.edu.tool.template.TableSingle;
 import com.example.edu.tool.Validator.Validator;
 import com.example.edu.tool.Validator.Exceptions.unknownRuleException;
 
@@ -36,25 +35,27 @@ public class AdminStudentController {
     private final ClassLevelService classLevelService;
     private final ClassesService classesService;
 
-
-    private final  Map<String, String> student_fieldToLabel = Map.of( //translate attribute name to label name (More readable) [OPTIONAL]
-        "id","ID",
-        "email","E-mail",
-        "surname","Nom",
-        "name","Prénom",
-        "dateofbirth","Date de naissance",
-        "level","Promotion",
-        "studentclass","Classe",
-        "confirm","Inscription confirmée"
-    );
-
-    private final List<String> student_fieldDisplayedOnLine = Arrays.asList("id", "email", "surname", "name", "confirm"); // fields displayed on the line that represent the data [OPTIONAL]
+    private TableSingle tableTemplate;
 
     @Autowired
     public AdminStudentController(StudentService studentService, ClassLevelService classLevelService, ClassesService classesService) {
         this.studentService = studentService;
         this.classLevelService = classLevelService;
         this.classesService = classesService;
+
+        Map<String, String> columnToLabel = Map.of( //translate attribute name to label name (More readable) [OPTIONAL]
+            "id","ID",
+            "email","E-mail",
+            "surname","Nom",
+            "name","Prénom",
+            "dateofbirth","Date de naissance",
+            "level","Promotion",
+            "studentclass","Classe",
+            "confirm","Inscription confirmée"
+        );
+        List<String> columnDisplayed = Arrays.asList("id", "email", "surname", "name", "confirm");
+
+        this.tableTemplate = new TableSingle("Élèves", columnToLabel, columnDisplayed);
     }
 
     /*
@@ -81,7 +82,7 @@ public class AdminStudentController {
         model.addAttribute("levelListe", allLevel);
         model.addAttribute("classesListe", allClasses);
 
-        Table.setup(model, "Élèves", new ArrayList<Object>(studentService.getAllStudents()), this.student_fieldToLabel, this.student_fieldDisplayedOnLine);
+        tableTemplate.initModel(model, studentService.getAllStudents(), Student.class);
         return "admin/student";  
     }
 
@@ -143,7 +144,8 @@ public class AdminStudentController {
             //failed validation
             model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
             model.addAttribute("messageType", "error");
-            Table.setupWithError(model, "", new ArrayList<Object>(studentService.getAllStudents()), this.student_fieldToLabel, false, requestContentValidator); //setup table to build with error
+
+            tableTemplate.initModel(model, null, Student.class, false, requestContentValidator);
         }
 
         // Transfer all attributes from the Model to RedirectAttributes
@@ -209,7 +211,8 @@ public class AdminStudentController {
             //failed validation
             model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
             model.addAttribute("messageType", "error");
-            Table.setupWithError(model, "", new ArrayList<Object>(studentService.getAllStudents()), this.student_fieldToLabel, true, requestContentValidator); //setup table to build with error
+
+            tableTemplate.initModel(model, null, Student.class, true, requestContentValidator);
         }
 
         // Transfer all attributes from the Model to RedirectAttributes

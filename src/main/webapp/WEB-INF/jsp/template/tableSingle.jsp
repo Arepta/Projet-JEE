@@ -5,7 +5,7 @@
 
 <div class="table-container">
     <div class="table-title">
-        <h1>${_tableTitle}</h1>
+        <h1>${_tableSingle_Title}</h1>
     </div>
 
     <div class="table-content">
@@ -21,17 +21,17 @@
             <table>
                 <tr id="table-data-head" class="table-data-head">
 
-                    <c:if test="${_tableLineDisplay != null}">
-                        <c:forEach var="attr" items="${_tableLineDisplay}">
-                            <c:if test="${_tableFieldToLabel[attr] != null}"><th name="${attr}">${_tableFieldToLabel[attr]}</th></c:if>  
-                            <c:if test="${_tableFieldToLabel[attr] == null}"><th name="${attr}">${attr}</th></c:if>  
+                    <c:if test="${_tableSingle_ColumnDisplayed != null}">
+                        <c:forEach var="attr" items="${_tableSingle_ColumnDisplayed}">
+                            <c:if test="${_tableSingle_ColumnToLabel[attr] != null}"><th name="${attr}">${_tableSingle_ColumnToLabel[attr]}</th></c:if>  
+                            <c:if test="${_tableSingle_ColumnToLabel[attr] == null}"><th name="${attr}">${attr}</th></c:if>  
                         </c:forEach>
                     </c:if>   
 
-                    <c:if test="${_tableLineDisplay == null}">
-                        <c:forEach var="attr" items="${_tableDataHeader}">
-                            <c:if test="${_tableFieldToLabel[attr] != null}"><th name="${attr}">${_tableFieldToLabel[attr.key]}</th></c:if>  
-                            <c:if test="${_tableFieldToLabel[attr] == null}"><th name="${attr}">${attr.key}</th></c:if>  
+                    <c:if test="${_tableSingle_ColumnDisplayed == null}">
+                        <c:forEach var="attr" items="${_tableSingle_DataHeader}">
+                            <c:if test="${_tableSingle_ColumnToLabel[attr] != null}"><th name="${attr}">${_tableSingle_ColumnToLabel[attr.key]}</th></c:if>  
+                            <c:if test="${_tableSingle_ColumnToLabel[attr] == null}"><th name="${attr}">${attr.key}</th></c:if>  
                         </c:forEach>
                     </c:if>   
                     
@@ -53,7 +53,7 @@
                 <h2 id="table-viewer-content-title">Modifier</h2>
             </div>
             <div class="table-viewer-error">
-                <c:forEach var="msg" items="${_tableErrorMessages}">
+                <c:forEach var="msg" items="${_tableSingle_ErrorMessages}">
                     <p>${msg}</p>
                 </c:forEach>
             </div>
@@ -63,28 +63,28 @@
 
                 <input type="hidden" name="_method" id="table-form-method" value="PUT"/>
     
-                <c:forEach var="attr" items="${_tableDataHeader}">
-                    <div class="table-form-input-wrapper <c:if test="${_tableErrorField[attr.key] != null}">${'error'}</c:if>">
+                <c:forEach var="attr" items="${_tableSingle_DataHeader}">
+                    <div class="table-form-input-wrapper <c:if test="${_tableSingle_ErrorField[attr.key] != null}">${'error'}</c:if>">
             
                         <c:if test="${ !attr.key.equals('password')}">
                             <label for="${attr.key}"></label>
-                                <c:if test="${_tableFieldToLabel[attr.key] != null && !attr.key.equals('id')}">${_tableFieldToLabel[attr.key]} :</c:if>  
-                                <c:if test="${_tableFieldToLabel[attr.key] == null && !attr.key.equals('id')}">${attr.key} :</c:if>
+                                <c:if test="${_tableSingle_ColumnToLabel[attr.key] != null && !attr.key.equals('id')}">${_tableSingle_ColumnToLabel[attr.key]} :</c:if>  
+                                <c:if test="${_tableSingle_ColumnToLabel[attr.key] == null && !attr.key.equals('id')}">${attr.key} :</c:if>
                             </label>
     
-                            <c:if test="${ _tableType[attr.value].equals('select') }">
+                            <c:if test="${ _tableSingle_Type[attr.value].equals('select') }">
                                 <select class="table-form-input" name="${attr.key}">
-                                    <option value="true" <c:if test="${_tableOldField[attr.key].equals('1')}">${'selected'}</c:if> >Oui</option>
-                                    <option value="false" <c:if test="${_tableOldField[attr.key].equals('0')}">${'selected'}</c:if>>Non</option>
+                                    <option value="true" <c:if test="${_tableSingle_OldField[attr.key].equals('1')}">${'selected'}</c:if> >Oui</option>
+                                    <option value="false" <c:if test="${_tableSingle_OldField[attr.key].equals('0')}">${'selected'}</c:if>>Non</option>
                                 </select>
                             </c:if>
     
-                            <c:if test="${ _tableType[attr.value] == null }">
+                            <c:if test="${ _tableSingle_Type[attr.value] == null }">
                                 <select class="table-form-input" name="${attr.key}"></select>
                             </c:if>
     
-                            <c:if test="${ !_tableType[attr.value].equals('select') && _tableType[attr.value] != null}">
-                                <input class="table-form-input" name="${attr.key}" type="${_tableType[attr.value]}" value="${_tableOldField[attr.key]}" <c:if test="${attr.key.equals('id')}">${'hidden required readonly'}</c:if>  >  
+                            <c:if test="${ !_tableSingle_Type[attr.value].equals('select') && _tableSingle_Type[attr.value] != null}">
+                                <input class="table-form-input" name="${attr.key}" type="${_tableSingle_Type[attr.value]}" value="${_tableSingle_OldField[attr.key]}" <c:if test="${attr.key.equals('id')}">${'hidden required readonly'}</c:if>  >  
                             </c:if>    
                         </c:if>
     
@@ -110,9 +110,9 @@
 
 <script src="/js/admin/table.js"></script>
 <script>    
-    table_init('${_tableData}');
+    table_init('${_tableSingle_Data}');
     table_setPage(0);
-    <c:if test="${ _tableSetCreate }">
+    <c:if test="${ _tableSingle_SetCreate }">
         document.getElementById('table-create-form-actions').style = "";
         document.getElementById('table-edit-form-actions').style = "display:none;";
         document.getElementById('table-form-method').value = 'POST';

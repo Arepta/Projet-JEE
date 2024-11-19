@@ -15,7 +15,7 @@
         <span>${message}</span>
     </div>
 
-    <jsp:include page="table.jsp" flush="true"/>  
+    <jsp:include page="../template/tableSingle.jsp" flush="true"/>  
 
     <script src="/js/admin/student.js"></script>
     <script>
