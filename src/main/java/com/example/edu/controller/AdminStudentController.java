@@ -31,7 +31,7 @@ import com.example.edu.tool.Validator.Exceptions.unknownRuleException;
 
 @Controller
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminStudentController {
     private final StudentService studentService;
     private final ClassLevelService classLevelService;
     private final ClassesService classesService;
@@ -51,7 +51,7 @@ public class AdminController {
     private final List<String> student_fieldDisplayedOnLine = Arrays.asList("id", "email", "surname", "name", "confirm"); // fields displayed on the line that represent the data [OPTIONAL]
 
     @Autowired
-    public AdminController(StudentService studentService, ClassLevelService classLevelService, ClassesService classesService) {
+    public AdminStudentController(StudentService studentService, ClassLevelService classLevelService, ClassesService classesService) {
         this.studentService = studentService;
         this.classLevelService = classLevelService;
         this.classesService = classesService;
