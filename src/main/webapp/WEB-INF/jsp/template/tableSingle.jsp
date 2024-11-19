@@ -108,7 +108,7 @@
 
 </div>
 
-<script src="/js/admin/table.js"></script>
+<script src="/js/template/tableSingle.js"></script>
 <script>    
     table_init('${_tableSingle_Data}');
     table_setPage(0);
