@@ -1,6 +1,8 @@
 package com.example.edu.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,18 @@ public class ClassLevelService {
     
     }
 
-        public List<ClassLevel> getAllClassLevels() {
+    public List<ClassLevel> getAllClassLevels() {
         return this.classLevelRepository.findAll(); //build in
+    }
+
+    public Map<Long, String> getAllClassLevelsIdxName() {
+
+        List<ClassLevel> b = this.classLevelRepository.findAll();
+        Map<Long, String> r = new HashMap<>();
+        for(ClassLevel cl : b){
+            r.put(cl.getId(), cl.getName());
+        }
+        return r; //build in
     }
 
     public Optional<ClassLevel> getClassLevelsById(Long id) {

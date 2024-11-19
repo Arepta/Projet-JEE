@@ -56,6 +56,8 @@ public class AdminStudentController {
         List<String> columnDisplayed = Arrays.asList("id", "email", "surname", "name", "confirm");
 
         this.tableTemplate = new TableSingle("Élèves", columnToLabel, columnDisplayed);
+        this.tableTemplate.addFilter("level", this.classLevelService.getAllClassLevelsIdxName());
+        this.tableTemplate.addFilter("studentclass", this.classesService.getAllClassesIdxName() );
     }
 
     /*

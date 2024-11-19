@@ -1,5 +1,6 @@
 function table_init(dataToParse){
     window._table_data = JSON.parse(dataToParse);
+    window._table_onDisplay = window._table_data;
     window._table_currentPage = 0;
     window._table_elementPerPage = 20;
     window._table_head = [];
@@ -12,11 +13,88 @@ function table_init(dataToParse){
     }
 }
 
-function table_setPage(number){
-    
-    if( number >= (window._table_data.length / window._table_elementPerPage) || number < 0){
-        return;
+function table_initFilters(filters, filterValueToLabel){
+    window._table_filters = JSON.parse(filters);
+    window._table_filterValueToLabel = JSON.parse(filterValueToLabel);
+    if(window._table_filterValueToLabel === undefined){
+        window._table_filterValueToLabel = {};
     }
+
+    if( window._table_filters ){
+        table_setFilter();
+    }
+    
+}
+
+function table_setFilter(){
+    let filtersValues = {};
+    let buffer;
+    let currrentFilter;
+
+    for(let j=0; j<window._table_filters.length; j++){
+        filtersValues[window._table_filters[j]] = [];
+        document.querySelector('[filter="'+window._table_filters[j]+'"]').innerHTML = `<option value="" selected></option>`;
+    }
+    
+
+    for(let i=0; i<window._table_data.length; i++){
+        for(let j=0; j<window._table_filters.length; j++){
+            currrentFilter = window._table_filters[j];
+            buffer = window._table_data[ i ] [ currrentFilter ];
+
+            if( buffer != null && !filtersValues[currrentFilter].includes( buffer )){
+                filtersValues[currrentFilter].push( buffer )
+
+                if(currrentFilter in window._table_filterValueToLabel && buffer in  window._table_filterValueToLabel[currrentFilter]){
+                    document.querySelector('[filter="'+currrentFilter+'"]').innerHTML += `<option value=${ buffer }>${window._table_filterValueToLabel[currrentFilter][buffer]}</option>`;
+                }
+                else{
+                    document.querySelector('[filter="'+currrentFilter+'"]').innerHTML += `<option value=${ buffer }>${buffer}</option>`;
+                }
+
+                
+            }
+        }
+    }
+    
+}
+
+function table_filter(){
+    let buffer;
+    let currrentFilter;
+    let ok = true;
+    
+    window._table_onDisplay = [];
+
+    for(let i=0; i<window._table_data.length; i++){
+        ok = true;
+
+        for(let j=0; j<window._table_filters.length; j++){
+
+            currrentFilter = document.querySelector('[filter="'+window._table_filters[j]+'"]');
+            buffer = window._table_data[ i ] [ window._table_filters[j] ];
+
+
+            if( currrentFilter.value.localeCompare("") !== 0 && currrentFilter.value.localeCompare(buffer) !== 0){
+                ok = false;
+                break;
+            }
+
+        }
+
+        if(ok){
+            
+
+            window._table_onDisplay.push(window._table_data[ i ]);
+        }
+    }
+    console.log(window._table_onDisplay);
+
+    table_setPage(0);
+}
+
+
+function table_setPage(number){
 
     window._table_currentPage = number;
 
@@ -25,11 +103,15 @@ function table_setPage(number){
 
     container.innerHTML = "";
 
- 
+    if( number >= (window._table_onDisplay.length / window._table_elementPerPage) || number < 0){
+        if(window._table_onDisplay.length !== 0){
+            return;
+        }
+    }
     
     for(let i = window._table_elementPerPage*number; i < window._table_elementPerPage*(number+1); i++){
 
-        if(i >= window._table_data.length){
+        if(i >= window._table_onDisplay.length){
             line = `<tr onclick='table_clearForm()'>`;
             for(let attr=0; attr<window._table_head.length; attr++){
                 line += `<td style="color:transparent;">-</td>`;
@@ -38,9 +120,9 @@ function table_setPage(number){
             line += "</tr>";
         }
         else{
-            line = `<tr onclick='table_setForm(${window._table_data[i]["id"]})'>`;
+            line = `<tr onclick='table_setForm(${window._table_onDisplay[i]["id"]})'>`;
             for(let attr=0; attr<window._table_head.length; attr++){
-                line += `<td>${window._table_data[i][window._table_head[attr]]}</td>`;
+                line += `<td>${window._table_onDisplay[i][window._table_head[attr]]}</td>`;
             }
 
             line += "</tr>";
@@ -66,7 +148,7 @@ function table_firstPage(){
 }
 
 function table_lastPage(){
-    table_setPage(Math.ceil(window._table_data.length / window._table_elementPerPage)-1);
+    table_setPage(Math.ceil(window._table_onDisplay.length / window._table_elementPerPage)-1);
 }
 
 function table_setForm(id){
@@ -131,7 +213,7 @@ function table_setSelectFieldData(LabelValueDict, fieldName){
                 inputs[i].innerHTML += `<option value=${LabelValueDict[label]}> ${label} </option>`;
             }
         }
-        console.log(window._table_data[id][inputs[i].getAttribute("name")])
+
         inputs[i].value = window._table_data[id][inputs[i].getAttribute("name")];
     }
 }

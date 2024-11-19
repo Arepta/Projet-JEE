@@ -13,6 +13,25 @@
         <div class="table-data">
             <div class="table-content-title">
                 <h2>Données</h2>
+
+                <c:if test="${_tableSingle_Filters != null}">
+                    <div class="table-content-filters">
+                        <span>Filtre - </span>
+                        <c:forEach var="filter" items="${_tableSingle_Filters}">
+
+                            <div class="table-data-filter-container">
+                                <span>
+                                    <c:if test="${_tableSingle_ColumnToLabel[filter] != null}">${_tableSingle_ColumnToLabel[filter]}</c:if>  
+                                    <c:if test="${_tableSingle_ColumnToLabel[filter] == null}">${filter}</c:if>  
+                                </span>
+                                <select class="table-data-filter" filter="${filter}" onchange="table_filter();">
+                                </select>
+                            </div>
+                            
+                        </c:forEach>
+                    </div>
+                </c:if>  
+                
                 <div class="table-content-actions">
                     <a href="">Actualiser</a>
                     <button onclick="table_setFormMode(true)">Nouveau</button>
@@ -112,10 +131,14 @@
 <script>    
     table_init('${_tableSingle_Data}');
     table_setPage(0);
+    table_initFilters('${_tableSingle_FiltersJSON}', '${_tableSingle_FiltersValueToLabel}');
+
     <c:if test="${ _tableSingle_SetCreate }">
         document.getElementById('table-create-form-actions').style = "";
         document.getElementById('table-edit-form-actions').style = "display:none;";
         document.getElementById('table-form-method').value = 'POST';
         document.getElementById('table-viewer-content-title').innerHTML = 'Nouveau';
     </c:if>
+
 </script>
+

@@ -26,7 +26,6 @@ function onSelectLevel(select){
     studentclassSelect.innerHTML = "";
 
     for(let i=0; i<window.studentclass.length; i++){
-        console.log(window.studentclass[i]["program"] , select.value)
         if(window.studentclass[i]["program"] === parseInt(select.value)){
             studentclassSelect.innerHTML += `<option value=${window.studentclass[i]["id"]}>${window.studentclass[i]["title"]}</option>`;
         }

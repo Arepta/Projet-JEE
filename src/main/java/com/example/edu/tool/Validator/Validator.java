@@ -133,12 +133,7 @@ public class Validator {
     }
 
     public List<String> getErrorsMessages(){
-        List<String> msg = new ArrayList<>();
-
-        for(String key : this.failedField.keySet()){
-            msg.add(this.failedField.get(key));
-        }
-        return msg;
+        return (List<String>) this.failedField.values();
     }
 
     public List<String> getRemainingField(){
