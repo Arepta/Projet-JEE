@@ -13,7 +13,7 @@ public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false, length = 100, unique = true)
     private String email;
@@ -26,20 +26,20 @@ public class Admin {
     }
 
     // Constructeur avec arguments pour la création facile d'instances
-    public Admin(String email, String password) {
+    public Admin(Long id, String email, String password) {
+        this.id = id;
         this.email = email;
         this.password = password;
     }
 
     // Getters et Setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    // disbaled for security
-    // public void setId(Long id) {
-    //     this.id = id;
-    // }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getEmail() {
         return email;

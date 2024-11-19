@@ -56,7 +56,7 @@ public class PublicController {
 
         if(requestValidator.validateRequest(params)){
 
-            Student newStudent = new Student(params.getFirst("username"), params.getFirst("password"), params.getFirst("name"), params.getFirst("surname"), null, params.getFirst("dateofbirth"), null);
+            Student newStudent = new Student(null, params.getFirst("username"), params.getFirst("password"), params.getFirst("name"), params.getFirst("surname"), null, params.getFirst("dateofbirth"), null);
             this.studentService.createStudent(newStudent);
 
             model.addAttribute("title", "Inscription termine");

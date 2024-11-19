@@ -12,7 +12,7 @@ public class Student {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     
     @Column(nullable = false, unique = true, length = 100)
     private String email;
@@ -37,7 +37,7 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "class", foreignKey = @ForeignKey(name = "fk_students_class"), 
         referencedColumnName = "id", nullable = true)
-    private ClassM studentClass;
+    private Classes studentClass;
 
     @Column(name = "confirm", nullable = false)
     private boolean confirm;
@@ -47,9 +47,9 @@ public class Student {
     public Student() {
     }
     
-    public Student(String email, String password, String name, String surname, ClassLevel level, String dateOfBirth, ClassM studentClass) {
+    public Student(Long id, String email, String password, String name, String surname, ClassLevel level, String dateOfBirth, Classes studentClass) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        this.id = null;
+        this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
@@ -62,14 +62,13 @@ public class Student {
     
     // Getters and Setters
     
-    public int getId() {
+    public Long getId() {
         return id;
     }
     
-    // disabled for security
-    // public void setId(Long id) {
-    //     this.id = id;
-    // }
+    public void setId(Long id) {
+        this.id = id;
+    }
     
     public String getEmail() {
         return email;
@@ -119,11 +118,11 @@ public class Student {
         this.level = level;
     }
     
-    public ClassM getStudentClass() {
+    public Classes getStudentClass() {
         return studentClass;
     }
     
-    public void setStudentClass(ClassM studentClass) {
+    public void setStudentClass(Classes studentClass) {
         this.studentClass = studentClass;
     }
 
@@ -142,7 +141,13 @@ public class Student {
         for (Field field : clazz.getDeclaredFields()) {
             try{
                 field.setAccessible(true);
-                if(field.get(this) == null || (!(field.get(this) instanceof String) && !(field.get(this) instanceof LocalDate)) ){
+                if(field.get(this) instanceof ClassLevel){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((ClassLevel)field.get(this)).getId() + ",");
+                }
+                else if(field.get(this) instanceof Classes){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Classes)field.get(this)).getId() + ",");
+                }
+                else if(field.get(this) == null || (!(field.get(this) instanceof String) && !(field.get(this) instanceof LocalDate)) ){
                     JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + field.get(this) + ",");
                 }
                 else{

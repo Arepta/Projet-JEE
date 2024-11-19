@@ -39,22 +39,43 @@ public class StudentService {
 
     public Student createStudent(Student StudentDetails) {
         StudentDetails.setPassword(passwordEncoder.encode(StudentDetails.getPassword()));
+
+        if(StudentDetails.getStudentClass() != null){
+
+            if(StudentDetails.getStudentClass().getProgram() == null){
+                StudentDetails.setLevel(null);
+            }
+            else{
+                StudentDetails.setLevel(StudentDetails.getStudentClass().getProgram().getLevel());
+            }
+        }
+        
         return this.studentRepository.save(StudentDetails);  //build in
     }
 
-    public Student updateStudent(Long id, Student StudentDetails) {
-        Optional<Student> optionalStudent = this.studentRepository.findById(id);
+    public Student updateStudent(Student StudentDetails) {
+        Optional<Student> optionalStudent = this.studentRepository.findById(StudentDetails.getId());
 
         if (optionalStudent.isPresent()) {
             Student updatedStudent = optionalStudent.get();
 
+            if(StudentDetails.getStudentClass() != null){
+
+                if(StudentDetails.getStudentClass().getProgram() == null){
+                    StudentDetails.setLevel(null);
+                }
+                else{
+                    StudentDetails.setLevel(StudentDetails.getStudentClass().getProgram().getLevel());
+                }
+            }
+
             updatedStudent.setEmail(StudentDetails.getEmail());
-            updatedStudent.setPassword(passwordEncoder.encode(StudentDetails.getPassword()));
             updatedStudent.setName(StudentDetails.getName());
             updatedStudent.setSurname(StudentDetails.getSurname());
             updatedStudent.setDateOfBirth(StudentDetails.getDateOfBirth());
             updatedStudent.setLevel(StudentDetails.getLevel());
             updatedStudent.setStudentClass(StudentDetails.getStudentClass());
+            updatedStudent.setConfirm(StudentDetails.getConfirm());
 
             return this.studentRepository.save(updatedStudent);
         }

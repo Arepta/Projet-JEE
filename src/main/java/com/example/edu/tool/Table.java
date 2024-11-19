@@ -18,6 +18,7 @@ public class Table {
     private final static Map<String, String> javaTypeToHTML = Map.of(
         LocalDate.class.getName(), "date",
         String.class.getName(), "text",
+        Long.class.getName(), "number",
         long.class.getName(), "number",
         Integer.class.getName(), "number",
         int.class.getName(), "number",
@@ -46,7 +47,6 @@ public class Table {
     }
     
     
-    
     public static void setup(Model model, String title, List<Object> data, Map<String, String> fieldToLabel){
         setup(model, title, data, fieldToLabel, null);
     }
@@ -60,7 +60,7 @@ public class Table {
     }
     
     
-    public static void setupWithError(Model model, String title, List<Object> data, Map<String, String> fieldToLabel, List<String> resitricedLineDisplay, Validator requestValiadtor){
+    public static void setupWithError(Model model, String title, List<Object> data, Map<String, String> fieldToLabel, List<String> resitricedLineDisplay, boolean createMode, Validator requestValiadtor){
         List<String> errMsg = new ArrayList<>();
         
         
@@ -70,6 +70,9 @@ public class Table {
         
         for (String key : requestValiadtor.getErrors().keySet()) {
 
+            if(fieldToLabel == null){
+                break;
+            }
 
             matcher = pattern.matcher(requestValiadtor.getErrors().get(key));
             
@@ -97,17 +100,19 @@ public class Table {
         model.addAttribute("_tableFieldToLabel", fieldToLabel); 
         model.addAttribute("_tableLineDisplay", resitricedLineDisplay); 
         model.addAttribute("_tableType", javaTypeToHTML); 
+        model.addAttribute("_tableSetCreate", createMode); 
     }
     
-    public static void setupWithError(Model model, String title, List<Object> data, Map<String, String> fieldToLabel, Validator requestValiadtor){
-        setupWithError(model, title, data, fieldToLabel, null, requestValiadtor);
+    public static void setupWithError(Model model, String title, List<Object> data, Map<String, String> fieldToLabel, boolean createMode, Validator requestValiadtor){
+        setupWithError(model, title, data, fieldToLabel, null, createMode, requestValiadtor);
     }
     
-    public static void setupWithError(Model model, String title, List<Object> data, List<String> resitricedLineDisplay, Validator requestValiadtor){
-        setupWithError(model, title, data, null, resitricedLineDisplay, requestValiadtor);
+    public static void setupWithError(Model model, String title, List<Object> data, List<String> resitricedLineDisplay, boolean createMode, Validator requestValiadtor){
+        setupWithError(model, title, data, null, resitricedLineDisplay, createMode, requestValiadtor);
     }
     
-    public static void setupWithError(Model model, String title, List<Object> data, Validator requestValiadtor){
-        setupWithError(model, title, data, null, null, requestValiadtor);
+    public static void setupWithError(Model model, String title, List<Object> data, boolean createMode, Validator requestValiadtor){
+        setupWithError(model, title, data, null, null, createMode, requestValiadtor);
     }
+        
 }

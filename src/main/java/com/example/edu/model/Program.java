@@ -8,7 +8,7 @@ public class Program {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     
     @Column(nullable = false, unique = true, length = 100)
     private String name;
@@ -23,22 +23,21 @@ public class Program {
     public Program() {
     }
     
-    public Program(String name, ClassLevel level) {
-        this.id = null;
+    public Program(Long id, String name, ClassLevel level) {
+        this.id = id;
         this.name = name;
         this.level = level;
     }
     
     // Getters et Setters
     
-    public int getId() {
+    public Long getId() {
         return id;
     }
     
-    // disabled for security
-    // public void setId(Long id) {
-    //     this.id = id;
-    // }
+    public void setId(Long id) {
+        this.id = id;
+    }
     
     public String getName() {
         return name;
