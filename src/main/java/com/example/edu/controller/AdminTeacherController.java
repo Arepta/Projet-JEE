@@ -151,7 +151,6 @@ public class AdminTeacherController {
 
         //Create validator to validate request content
         Validator requestContentValidator = new Validator(Map.of(
-            "id", "required|int|min=0", //must be a number 0 min, MANDATORY
             "email", "required|email|max=100", //must be an email 100 char max, MANDATORY
             "surname", "max=100", //must be a string 100 char max, OPTIONAL
             "name", "max=100", //must be a string 100 char max, OPTIONAL
@@ -167,7 +166,7 @@ public class AdminTeacherController {
 
 
             Teacher details = new Teacher(
-                Long.parseLong(request.getFirst("id")),
+                null,
                 request.getFirst("email"), 
                 "", 
                 request.getFirst("surname"), 

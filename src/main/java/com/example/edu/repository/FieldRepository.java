@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.edu.model.FieldTeacher;
-import com.example.edu.model.FieldTeacher;
+
 
 public interface FieldRepository extends JpaRepository<FieldTeacher, Long>{
 
