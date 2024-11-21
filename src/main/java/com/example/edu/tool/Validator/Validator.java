@@ -133,7 +133,7 @@ public class Validator {
     }
 
     public List<String> getErrorsMessages(){
-        return (List<String>) this.failedField.values();
+        return  new ArrayList<String>(this.failedField.values());
     }
 
     public List<String> getRemainingField(){
