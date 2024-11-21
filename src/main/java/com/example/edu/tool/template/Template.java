@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
+
 
 /*
  * Default configuration for template
@@ -26,18 +28,19 @@ public abstract class Template {
         Integer.class.getName(), "number",
         int.class.getName(), "number",
         double.class.getName(), "number",
-        Double.class.getName(), "number",
-        boolean.class.getName(), "select"
+        Double.class.getName(), "number"
     );
 
     protected String title; //title
     protected Map<String, String> columnToLabel; //store cast for SQL column name to displayed name
     protected List<String> columnDisplayed; // store the column that are display per line
+    protected Gson gson;
 
     protected Template(String title, Map<String, String> columnToLabel, List<String> columnDisplayed){
         this.title = title;
         this.columnToLabel = columnToLabel;
         this.columnDisplayed = columnDisplayed;
+        this.gson = new Gson();
     }
 
 

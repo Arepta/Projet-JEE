@@ -50,7 +50,10 @@ public class AdminTeacherController {
         List<String> columnDisplayed = Arrays.asList("id", "email", "surname", "name", "confirm");
 
         this.tableTemplate = new TableSingle("Professeur", columnToLabel, columnDisplayed);
-        this.tableTemplate.addFilter("field", this.FieldService.getAllFieldIdxName());
+
+        //this.tableTemplate.addFilter("field", this.FieldService.getAllFieldIdxName());
+        this.tableTemplate.setValuesFor("level", this.FieldService::getAllFieldIdxName);
+        this.tableTemplate.addFilter("field");
     }
 
     /*

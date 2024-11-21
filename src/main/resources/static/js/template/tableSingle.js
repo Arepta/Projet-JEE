@@ -11,68 +11,43 @@ function table_init(dataToParse){
 
         window._table_head.push(head.children[e].getAttribute("name"));
     }
-}
 
-function table_initFilters(filters, filterValueToLabel){
-    window._table_filters = JSON.parse(filters);
-    window._table_filterValueToLabel = JSON.parse(filterValueToLabel);
-    if(window._table_filterValueToLabel === undefined){
-        window._table_filterValueToLabel = {};
-    }
+    let filters = document.querySelectorAll('[filter]');
+    let name;
+    let currrentSelect;
 
-    if( window._table_filters ){
-        table_setFilter();
-    }
-    
-}
+    for(let j=0; j<filters.length; j++){
 
-function table_setFilter(){
-    let filtersValues = {};
-    let buffer;
-    let currrentFilter;
+        name = filters[j].getAttribute('filter');
+        currrentSelect = document.querySelector('select[name="'+name+'"]');
 
-    for(let j=0; j<window._table_filters.length; j++){
-        filtersValues[window._table_filters[j]] = [];
-        document.querySelector('[filter="'+window._table_filters[j]+'"]').innerHTML = `<option value="" selected></option>`;
-    }
-    
-
-    for(let i=0; i<window._table_data.length; i++){
-        for(let j=0; j<window._table_filters.length; j++){
-            currrentFilter = window._table_filters[j];
-            buffer = window._table_data[ i ] [ currrentFilter ];
-
-            if( buffer != null && !filtersValues[currrentFilter].includes( buffer )){
-                filtersValues[currrentFilter].push( buffer )
-
-                if(currrentFilter in window._table_filterValueToLabel && buffer in  window._table_filterValueToLabel[currrentFilter]){
-                    document.querySelector('[filter="'+currrentFilter+'"]').innerHTML += `<option value=${ buffer }>${window._table_filterValueToLabel[currrentFilter][buffer]}</option>`;
-                }
-                else{
-                    document.querySelector('[filter="'+currrentFilter+'"]').innerHTML += `<option value=${ buffer }>${buffer}</option>`;
-                }
-
-                
-            }
+        if( !currrentSelect ){
+            continue;
         }
+
+        for(let i=0; i<currrentSelect.children.length; i++){
+            if(currrentSelect.children[i].value.localeCompare("") === 0) continue;
+            filters[j].innerHTML += `<option value=${currrentSelect.children[i].value}>${currrentSelect.children[i].innerHTML}</option>`;
+        }
+
     }
-    
 }
 
 function table_filter(){
     let buffer;
     let currrentFilter;
     let ok = true;
+    let filters = document.querySelectorAll('[filter]');
     
     window._table_onDisplay = [];
 
     for(let i=0; i<window._table_data.length; i++){
         ok = true;
 
-        for(let j=0; j<window._table_filters.length; j++){
+        for(let j=0; j<filters.length; j++){
 
-            currrentFilter = document.querySelector('[filter="'+window._table_filters[j]+'"]');
-            buffer = window._table_data[ i ] [ window._table_filters[j] ];
+            currrentFilter = filters[j];
+            buffer = window._table_data[ i ] [ currrentFilter.getAttribute('filter') ];
 
 
             if( currrentFilter.value.localeCompare("") !== 0 && currrentFilter.value.localeCompare(buffer) !== 0){
@@ -83,12 +58,9 @@ function table_filter(){
         }
 
         if(ok){
-            
-
             window._table_onDisplay.push(window._table_data[ i ]);
         }
     }
-    console.log(window._table_onDisplay);
 
     table_setPage(0);
 }

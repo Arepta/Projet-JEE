@@ -28,6 +28,10 @@ import com.example.edu.tool.template.TableSingle;
 import com.example.edu.tool.Validator.Validator;
 import com.example.edu.tool.Validator.Exceptions.unknownRuleException;
 
+/*
+ * The method setValuesFor(java.lang.String, java.util.function.Supplier<java.util.Map<?,java.lang.String>>) 
+ *  (java.lang.String, java.util.function.Supplier<java.util.Map<?,java.lang.String>>)
+ */
 @Controller
 @RequestMapping("/admin")
 public class AdminStudentController {
@@ -56,8 +60,13 @@ public class AdminStudentController {
         List<String> columnDisplayed = Arrays.asList("id", "email", "surname", "name", "confirm");
 
         this.tableTemplate = new TableSingle("Élèves", columnToLabel, columnDisplayed);
-        this.tableTemplate.addFilter("level", this.classLevelService.getAllClassLevelsIdxName());
-        this.tableTemplate.addFilter("studentclass", this.classesService.getAllClassesIdxName() );
+
+        this.tableTemplate.setValuesFor("level", this.classLevelService::getAllClassLevelsIdxName);
+        this.tableTemplate.setValuesFor("studentclass", this.classesService::getAllClassesIdxName);
+        this.tableTemplate.setValuesFor("confirm", () -> { return Map.of(true, "Oui", false, "Non"); });
+        this.tableTemplate.addFilter("level");
+        this.tableTemplate.addFilter("studentclass");
+        this.tableTemplate.addFilter("confirm");
     }
 
     /*

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <link rel="stylesheet" type="text/css" href="/css/admin/tableDefault.css">
 
@@ -25,6 +26,7 @@
                                     <c:if test="${_tableSingle_ColumnToLabel[filter] == null}">${filter}</c:if>  
                                 </span>
                                 <select class="table-data-filter" filter="${filter}" onchange="table_filter();">
+                                    <option value="" selected></option>
                                 </select>
                             </div>
                             
@@ -87,23 +89,23 @@
             
                         <c:if test="${ !attr.key.equals('password')}">
                             <label for="${attr.key}"></label>
-                                <c:if test="${_tableSingle_ColumnToLabel[attr.key] != null && !attr.key.equals('id')}">${_tableSingle_ColumnToLabel[attr.key]} :</c:if>  
-                                <c:if test="${_tableSingle_ColumnToLabel[attr.key] == null && !attr.key.equals('id')}">${attr.key} :</c:if>
+                                <c:if test="${_tableSingle_ColumnToLabel[attr.key] != null && !fn:contains( _tableSingle_ColumnLock, attr.key )}">${_tableSingle_ColumnToLabel[attr.key]} :</c:if>  
+                                <c:if test="${_tableSingle_ColumnToLabel[attr.key] == null && !fn:contains( _tableSingle_ColumnLock, attr.key )}">${attr.key} :</c:if>
                             </label>
     
-                            <c:if test="${ _tableSingle_Type[attr.value].equals('select') }">
-                                <select class="table-form-input" name="${attr.key}">
-                                    <option value="true" <c:if test="${_tableSingle_OldField[attr.key].equals('1')}">${'selected'}</c:if> >Oui</option>
-                                    <option value="false" <c:if test="${_tableSingle_OldField[attr.key].equals('0')}">${'selected'}</c:if>>Non</option>
+                            <c:if test="${ _tableSingle_Type[attr.value] == null }">
+                                <select class="table-form-input" name="${attr.key}" <c:if test="${ fn:contains( _tableSingle_ColumnLock_tableSingle_ColumnLock, attr.key ) }">${'hidden readonly'}</c:if> >
+                                    <c:if test="${_tableSingle_NGValues[attr.key] != null}">
+                                        <option value="" selected></option>
+                                        <c:forEach var="map" items="${_tableSingle_NGValues[attr.key]}">
+                                            <option value="${map.key}">${map.value}</option>
+                                        </c:forEach>
+                                    </c:if>  
                                 </select>
                             </c:if>
     
-                            <c:if test="${ _tableSingle_Type[attr.value] == null }">
-                                <select class="table-form-input" name="${attr.key}"></select>
-                            </c:if>
-    
                             <c:if test="${ !_tableSingle_Type[attr.value].equals('select') && _tableSingle_Type[attr.value] != null}">
-                                <input class="table-form-input" name="${attr.key}" type="${_tableSingle_Type[attr.value]}" value="${_tableSingle_OldField[attr.key]}" <c:if test="${attr.key.equals('id')}">${'hidden required readonly'}</c:if>  >  
+                                <input class="table-form-input" name="${attr.key}" type="${_tableSingle_Type[attr.value]}" value="${_tableSingle_OldField[attr.key]}" <c:if test="${fn:contains( _tableSingle_ColumnLock, attr.key )}">${'hidden readonly'}</c:if>  >  
                             </c:if>    
                         </c:if>
     
@@ -131,7 +133,6 @@
 <script>    
     table_init('${_tableSingle_Data}');
     table_setPage(0);
-    table_initFilters('${_tableSingle_FiltersJSON}', '${_tableSingle_FiltersValueToLabel}');
 
     <c:if test="${ _tableSingle_SetCreate }">
         document.getElementById('table-create-form-actions').style = "";

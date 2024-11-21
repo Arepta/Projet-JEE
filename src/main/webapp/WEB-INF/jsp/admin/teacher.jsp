@@ -17,9 +17,5 @@
 
     <jsp:include page="../template/tableSingle.jsp" flush="true"/>  
 
-    <script src="/js/admin/student.js"></script>
-    <script>
-        initSelect('${levelListe}', '${classesListe}');
-    </script>
 </body>
 </html>
