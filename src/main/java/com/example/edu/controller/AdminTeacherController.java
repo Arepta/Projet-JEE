@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.edu.model.Teacher;
-import com.example.edu.model.Field_teacher;
+import com.example.edu.model.FieldTeacher;
 import com.example.edu.service.FieldService;
 import com.example.edu.service.TeacherService;
 
@@ -72,7 +72,7 @@ public class AdminTeacherController {
     @GetMapping("/teacher")
     public String teacher(Model model) {
 
-        List<Field_teacher> allLevel = FieldService.getAllField();
+        List<FieldTeacher> allLevel = FieldService.getAllField();
         model.addAttribute("FieldListe", allLevel);
 
         tableTemplate.initModel(model, TeacherService.getAllTeachers(), Teacher.class);
@@ -86,7 +86,7 @@ public class AdminTeacherController {
      * 
      */
     @PutMapping("/teacher")
-    public String updateStudent(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
+    public String updateTeacher(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
 
         //Create validator to validate request content
         Validator requestContentValidator = new Validator(Map.of(
@@ -100,8 +100,8 @@ public class AdminTeacherController {
 
         if( requestContentValidator.validateRequest(request) ){ //validate the request
 
-            Optional<Field_teacher> ocl = FieldService.getFieldById(Long.parseLong(request.getFirst("field")));
-            Field_teacher cl = ocl.isPresent() ? ocl.get() : null;
+            Optional<FieldTeacher> ocl = FieldService.getFieldById(Long.parseLong(request.getFirst("field")));
+            FieldTeacher cl = ocl.isPresent() ? ocl.get() : null;
             
 
             Teacher details = new Teacher(
@@ -147,7 +147,7 @@ public class AdminTeacherController {
      * 
      */
     @PostMapping("/teacher")
-    public String createStudent(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
+    public String createTeacher(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
 
         //Create validator to validate request content
         Validator requestContentValidator = new Validator(Map.of(
@@ -161,8 +161,8 @@ public class AdminTeacherController {
 
         if( requestContentValidator.validateRequest(request) ){ //validate the request
 
-            Optional<Field_teacher> ocl = FieldService.getFieldById(Long.parseLong(request.getFirst("field")));
-            Field_teacher cl = ocl.isPresent() ? ocl.get() : null;
+            Optional<FieldTeacher> ocl = FieldService.getFieldById(Long.parseLong(request.getFirst("field")));
+            FieldTeacher cl = ocl.isPresent() ? ocl.get() : null;
 
 
 
@@ -208,7 +208,7 @@ public class AdminTeacherController {
      * 
      */
     @DeleteMapping("/teacher")
-    public String deleteStudent(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
+    public String deleteTeacher(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
 
         //Create validator to validate request content
         Validator requestContentValidator = new Validator(Map.of(

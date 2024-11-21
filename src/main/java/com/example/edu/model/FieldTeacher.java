@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "field")
-public class Field_teacher {
+public class FieldTeacher {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,10 +18,10 @@ public class Field_teacher {
 
     // Constructors
 
-    public Field_teacher() {
+    public FieldTeacher() {
     }
 
-    public Field_teacher(Long id, String name) {
+    public FieldTeacher(Long id, String name) {
         this.id = id;
         this.name = name;
     }

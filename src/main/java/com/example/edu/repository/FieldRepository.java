@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.edu.model.Field_teacher;
+import com.example.edu.model.FieldTeacher;
+import com.example.edu.model.FieldTeacher;
 
-public interface FieldRepository extends JpaRepository<Field_teacher, Long>{
+public interface FieldRepository extends JpaRepository<FieldTeacher, Long>{
 
     @Query(value = "SELECT * FROM field WHERE name = %:name% LIMIT 1", nativeQuery = true)
-    Optional<Field_teacher> findByName(@Param("name") String name);
+    Optional<FieldTeacher> findByName(@Param("name") String name);
 
 }

@@ -28,13 +28,13 @@ public class Teacher {
     @ManyToOne
     @JoinColumn(name = "field", foreignKey = @ForeignKey(name = "fk_teachers_field"), 
         referencedColumnName = "id", nullable = true)
-    private Field_teacher field;
+    private FieldTeacher field;
 
     
     public Teacher() {
     }
     
-    public Teacher(Long id, String email, String password, String name, String surname, Field_teacher field) {
+    public Teacher(Long id, String email, String password, String name, String surname, FieldTeacher field) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -85,11 +85,11 @@ public class Teacher {
         this.surname = surname;
     }
 
-    public Field_teacher getField(){
+    public FieldTeacher getField(){
         return field;
     }
 
-    public void setField(Field_teacher field){
+    public void setField(FieldTeacher field){
         this.field = field;
     }
 

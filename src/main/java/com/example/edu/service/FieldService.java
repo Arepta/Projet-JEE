@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.edu.model.Field_teacher;
+import com.example.edu.model.FieldTeacher;
 import com.example.edu.repository.FieldRepository;
 
 @Service
@@ -21,38 +21,38 @@ public class FieldService {
     
     }
 
-    public List<Field_teacher> getAllField() {
+    public List<FieldTeacher> getAllField() {
         return this.FieldRepository.findAll(); //build in
     }
     
 
     public Map<Long, String> getAllFieldIdxName() {
 
-        List<Field_teacher> b = this.FieldRepository.findAll();
+        List<FieldTeacher> b = this.FieldRepository.findAll();
         Map<Long, String> r = new HashMap<>();
-        for(Field_teacher cl : b){
+        for(FieldTeacher cl : b){
             r.put(cl.getId(), cl.getName());
         }
         return r; //build in
     }
 
-    public Optional<Field_teacher> getFieldById(Long id) {
+    public Optional<FieldTeacher> getFieldById(Long id) {
         return this.FieldRepository.findById(id);  //build in
     }
 
-    public Optional<Field_teacher> getFieldByName(String name) {
+    public Optional<FieldTeacher> getFieldByName(String name) {
         return this.FieldRepository.findByName(name);  //build in
     }
 
-    public Field_teacher createField(Field_teacher FieldDetails) {
+    public FieldTeacher createField(FieldTeacher FieldDetails) {
         return this.FieldRepository.save(FieldDetails);  //build in
     }
 
-    public Field_teacher updateField(Field_teacher FieldDetails) {
-        Optional<Field_teacher> optionalField = this.FieldRepository.findById(FieldDetails.getId());
+    public FieldTeacher updateField(FieldTeacher FieldDetails) {
+        Optional<FieldTeacher> optionalField = this.FieldRepository.findById(FieldDetails.getId());
 
         if (optionalField.isPresent()) {
-            Field_teacher updatedField = optionalField.get();
+            FieldTeacher updatedField = optionalField.get();
 
             updatedField.setName(FieldDetails.getName());
 
