@@ -13,20 +13,14 @@ public class Program {
     @Column(nullable = false, unique = true, length = 100)
     private String name;
     
-    @ManyToOne
-    @JoinColumn(name = "level", foreignKey = @ForeignKey(name = "fk_programs_level"), 
-        referencedColumnName = "id", nullable = true)
-    private ClassLevel level;
-    
     // Constructors
     
     public Program() {
     }
     
-    public Program(Long id, String name, ClassLevel level) {
+    public Program(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.level = level;
     }
     
     // Getters et Setters
@@ -47,11 +41,4 @@ public class Program {
         this.name = name;
     }
     
-    public ClassLevel getLevel() {
-        return level;
-    }
-    
-    public void setLevel(ClassLevel level) {
-        this.level = level;
-    }
 }

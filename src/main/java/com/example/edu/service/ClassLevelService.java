@@ -36,6 +36,17 @@ public class ClassLevelService {
         return r; //build in
     }
 
+    public Map<Long, List<Long>> getAllClassLevelsClasses() {
+
+        List<ClassLevel> b = this.classLevelRepository.findAll();
+        Map<Long, List<Long>> r = new HashMap<>();
+        for(ClassLevel cl : b){
+            r.put(cl.getId(), this.classLevelRepository.getClassesForId(cl.getId()));
+        }
+        return r; //build in
+    }
+
+
     public Optional<ClassLevel> getClassLevelsById(Long id) {
         return this.classLevelRepository.findById(id);  //build in
     }

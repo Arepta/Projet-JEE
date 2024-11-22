@@ -1,9 +1,12 @@
-function table_init(dataToParse){
+function table_init(dataToParse, links, linksData){
     window._table_data = JSON.parse(dataToParse);
     window._table_onDisplay = window._table_data;
     window._table_currentPage = 0;
     window._table_elementPerPage = 20;
     window._table_head = [];
+    window._table_links = JSON.parse(links);
+    window._table_linksData = JSON.parse(linksData);
+
 
     let head = document.getElementById("table-data-head");
 
@@ -30,6 +33,39 @@ function table_init(dataToParse){
             filters[j].innerHTML += `<option value=${currrentSelect.children[i].value}>${currrentSelect.children[i].innerHTML}</option>`;
         }
 
+    }
+}
+
+function table_onChangeSelectValue(trigger){
+    let from = trigger.getAttribute('name');
+    let to = "";
+    let selectTo = null;
+    let values = null;
+
+    if(!window._table_links[from]){
+        return;
+    }
+
+    to = window._table_links[from];
+    selectTo = document.querySelector('select[name="'+to+'"]');
+    
+    values = window._table_linksData[from+"-"+to][trigger.value];
+    let bvl;
+    for(let i=1; i<selectTo.children.length; i++){
+    
+        bvl = isNaN(selectTo.children[i].value) ? selectTo.children[i].value : parseInt(selectTo.children[i].value);
+        
+        if(values === undefined || values.includes(bvl)){
+            selectTo.children[i].hidden = false;
+        }
+        else{
+            selectTo.children[i].hidden = true;
+        }
+    }
+
+    selectTo.value = selectTo.children[0];
+    if(selectTo.onchange){
+        selectTo.onchange();
     }
 }
 
@@ -73,14 +109,15 @@ function table_setPage(number){
     let container = document.getElementById("table-data-body");
     let line = "";
 
-    container.innerHTML = "";
-
+   
     if( number >= (window._table_onDisplay.length / window._table_elementPerPage) || number < 0){
         if(window._table_onDisplay.length !== 0){
             return;
         }
     }
     
+    container.innerHTML = "";
+
     for(let i = window._table_elementPerPage*number; i < window._table_elementPerPage*(number+1); i++){
 
         if(i >= window._table_onDisplay.length){

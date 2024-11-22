@@ -30,8 +30,23 @@ public class ClassesService {
 
         List<Classes> b = this.classesRepository.findAll();
         Map<Long, String> r = new HashMap<>();
+        Map<String, Integer> prCount = new HashMap<>();
         for(Classes cl : b){
-            r.put(cl.getId(), cl.getTitle());
+            
+            if(prCount.get(cl.getProgram().getName()) == null){
+                prCount.put(cl.getProgram().getName(), 1);
+            }
+            else{
+                prCount.put(cl.getProgram().getName(), prCount.get(cl.getProgram().getName())+1);
+            }
+
+            if(cl.getName() == null){
+                r.put(cl.getId(), cl.getProgram().getName()+" Groupe "+ prCount.get(cl.getProgram().getName()));
+            }
+            else{
+                r.put(cl.getId(), cl.getName());
+            }
+            
         }
         return r; //build in
     }

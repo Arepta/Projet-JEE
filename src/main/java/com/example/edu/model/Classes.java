@@ -14,25 +14,28 @@ public class Classes {
     private Long id;
     
     @Column(length = 100)
-    private String title;
-    
-    @Column(nullable = false)
-    private int size = 30;
+    private String name;
     
     @ManyToOne
     @JoinColumn(name = "program", foreignKey = @ForeignKey(name = "fk_class_program"), 
         referencedColumnName = "id", nullable = false)
     private Program program;
+
+    @ManyToOne
+    @JoinColumn(name = "level", foreignKey = @ForeignKey(name = "fk_class_level"), 
+                referencedColumnName = "id", nullable = true)
+    private ClassLevel level; // New relationship for 'level'
     
     // Constructors
     
     public Classes() {
     }
     
-    public Classes(Long id, String title, int size) {
+    public Classes(Long id, String name, Program program, ClassLevel level) {
         this.id = id;
-        this.title = title;
-        this.size = size;
+        this.name = name;
+        this.program = program;
+        this.level = level;
     }
     
     // Getters et Setters
@@ -45,20 +48,12 @@ public class Classes {
         this.id = id;
     }
     
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
     
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    
-    public int getSize() {
-        return size;
-    }
-    
-    public void setSize(int size) {
-        this.size = size;
+    public void setName(String name) {
+        this.name = name;
     }
     
     public Program getProgram() {
@@ -67,6 +62,14 @@ public class Classes {
     
     public void setProgram(Program program) {
         this.program = program;
+    }
+
+    public ClassLevel getLevel() {
+        return level;
+    }
+
+    public void setLevel(ClassLevel level) {
+        this.level = level;
     }
     
     @Override

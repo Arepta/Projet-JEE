@@ -25,7 +25,7 @@
                                     <c:if test="${_tableSingle_ColumnToLabel[filter] != null}">${_tableSingle_ColumnToLabel[filter]}</c:if>  
                                     <c:if test="${_tableSingle_ColumnToLabel[filter] == null}">${filter}</c:if>  
                                 </span>
-                                <select class="table-data-filter" filter="${filter}" onchange="table_filter();">
+                                <select class="table-data-filter" filter="${filter}" name="filter-${filter}" onchange="table_filter();table_onChangeSelectValue(this);">
                                     <option value="" selected></option>
                                 </select>
                             </div>
@@ -94,7 +94,7 @@
                             </label>
     
                             <c:if test="${ _tableSingle_Type[attr.value] == null }">
-                                <select class="table-form-input" name="${attr.key}" <c:if test="${ fn:contains( _tableSingle_ColumnLock_tableSingle_ColumnLock, attr.key ) }">${'hidden readonly'}</c:if> >
+                                <select class="table-form-input" name="${attr.key}" <c:if test="${ fn:contains( _tableSingle_ColumnLock_tableSingle_ColumnLock, attr.key ) }">${'hidden readonly'}</c:if> onchange="table_onChangeSelectValue(this)" >
                                     <c:if test="${_tableSingle_NGValues[attr.key] != null}">
                                         <option value="" selected></option>
                                         <c:forEach var="map" items="${_tableSingle_NGValues[attr.key]}">
@@ -131,7 +131,7 @@
 
 <script src="/js/template/tableSingle.js"></script>
 <script>    
-    table_init('${_tableSingle_Data}');
+    table_init('${_tableSingle_Data}', '${_tableSingle_Links}', '${_tableSingle_LinksData}');
     table_setPage(0);
 
     <c:if test="${ _tableSingle_SetCreate }">

@@ -15,12 +15,16 @@ public class TableSingle extends Template{
     private List<String> lockColumns;
     private List<String> filters;
     private Map<String, Supplier<Map<?, String>>> nonGeneriqueValues;
+    private Map<String, String> links;
+    private Map<String, Map<?,List<?>>> linksData;
 
     public TableSingle(String title, Map<String, String> columnToLabel, List<String> columnDisplayed){
         super(title, columnToLabel, columnDisplayed);
         this.lockColumns = new ArrayList<>();
         this.filters = new ArrayList<>();
         this.nonGeneriqueValues = new HashMap<>();
+        this.links = new HashMap<>();
+        this.linksData = new HashMap<>();
 
         this.addLock("id");
     }
@@ -40,6 +44,8 @@ public class TableSingle extends Template{
         model.addAttribute("_tableSingle_Data", data); 
         model.addAttribute("_tableSingle_NGValues", buffer_nonGeneriqueValues); 
         model.addAttribute("_tableSingle_Filters", filters); 
+        model.addAttribute("_tableSingle_Links", this.gson.toJson(this.links)); 
+        model.addAttribute("_tableSingle_LinksData", this.gson.toJson(this.linksData)); 
         model.addAttribute("_tableSingle_Type", this.typeJavaToHTML); 
     }
 
@@ -63,4 +69,13 @@ public class TableSingle extends Template{
         this.nonGeneriqueValues.put(column, MethodForvalueToLabel);
     }
 
+    public <K,V> void addLink(String From, String To, Map<K,List<V>> FromValueOfToValues){
+        this.links.put(From, To);
+        this.linksData.put(From+"-"+To, new HashMap<>(FromValueOfToValues));
+    }
+
+    public <K,V> void addFilterLink(String From, String To, Map<K,List<V>> FromValueOfToValues){
+        this.links.put("filter-"+From, "filter-"+To);
+        this.linksData.put("filter-"+From+"-"+"filter-"+To, new HashMap<>(FromValueOfToValues));
+    }
 }

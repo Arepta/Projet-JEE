@@ -39,16 +39,6 @@ public class StudentService {
 
     public Student createStudent(Student StudentDetails) {
         StudentDetails.setPassword(passwordEncoder.encode(StudentDetails.getPassword()));
-
-        if(StudentDetails.getStudentClass() != null){
-
-            if(StudentDetails.getStudentClass().getProgram() == null){
-                StudentDetails.setLevel(null);
-            }
-            else{
-                StudentDetails.setLevel(StudentDetails.getStudentClass().getProgram().getLevel());
-            }
-        }
         
         return this.studentRepository.save(StudentDetails);  //build in
     }
@@ -58,17 +48,7 @@ public class StudentService {
 
         if (optionalStudent.isPresent()) {
             Student updatedStudent = optionalStudent.get();
-
-            if(StudentDetails.getStudentClass() != null){
-
-                if(StudentDetails.getStudentClass().getProgram() == null){
-                    StudentDetails.setLevel(null);
-                }
-                else{
-                    StudentDetails.setLevel(StudentDetails.getStudentClass().getProgram().getLevel());
-                }
-            }
-
+            
             updatedStudent.setEmail(StudentDetails.getEmail());
             updatedStudent.setName(StudentDetails.getName());
             updatedStudent.setSurname(StudentDetails.getSurname());

@@ -67,6 +67,8 @@ public class AdminStudentController {
         this.tableTemplate.addFilter("level");
         this.tableTemplate.addFilter("studentclass");
         this.tableTemplate.addFilter("confirm");
+        this.tableTemplate.addLink("level", "studentclass", this.classLevelService.getAllClassLevelsClasses()); 
+        this.tableTemplate.addFilterLink("level", "studentclass", this.classLevelService.getAllClassLevelsClasses()); 
     }
 
     /*
@@ -139,7 +141,14 @@ public class AdminStudentController {
             );
             details.setConfirm(Boolean.parseBoolean(request.getFirst("confirm")));
 
-            if(studentService.updateStudent(details) != null){
+            if(details.getStudentClass() != null && details.getStudentClass().getLevel().getId() != details.getLevel().getId()){
+                //failed validation
+                model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
+                model.addAttribute("messageType", "error");
+
+                tableTemplate.initModel(model, null, Student.class, false, requestContentValidator);
+                
+            }else if(studentService.updateStudent(details) != null){
                 //processed
                 model.addAttribute("message", "L'élève a été mit à jour.");
                 model.addAttribute("messageType", "success");
