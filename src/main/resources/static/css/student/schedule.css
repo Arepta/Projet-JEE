@@ -1,0 +1,50 @@
+/* Tableau général */
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f9f9f9;
+}
+
+.schedule-table th,
+.schedule-table td {
+    border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: top;
+    padding: 5px;
+    position: relative;
+    height: 60px;
+}
+
+.schedule-table th {
+    background: #3498db;
+    color: white;
+    font-weight: bold;
+}
+
+/* Style des cours */
+.course {
+    background: #f1c40f;
+    color: white;
+    margin: 2px;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Remplit la hauteur fusionnée */
+}
+
+.course span {
+    font-size: 12px;
+    margin: 2px 0;
+}
+
+/* Cellule vide (créneaux fusionnés) */
+.schedule-table .empty {
+    background-color: transparent;
+    border: none;
+}
