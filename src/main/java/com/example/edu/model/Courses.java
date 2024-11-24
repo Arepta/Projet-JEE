@@ -87,7 +87,14 @@ public class Courses {
         for (Field field : clazz.getDeclaredFields()) {
             try {
                 field.setAccessible(true);
-                if (field.get(this) == null ||
+
+                if(field.get(this) instanceof ClassLevel){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((ClassLevel)field.get(this)).getId() + ",");
+                }
+                else if(field.get(this) instanceof FieldTeacher){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((FieldTeacher)field.get(this)).getId() + ",");
+                } 
+                else if (field.get(this) == null ||
                     (!(field.get(this) instanceof String) && !(field.get(this) instanceof LocalDate))) {
                     JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + field.get(this) + ",");
                 } else {

@@ -1,4 +1,4 @@
-package com.example.edu.controller;
+package com.example.edu.controller.admin;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +39,7 @@ public class AdminStudentController {
     private final ClassLevelService classLevelService;
     private final ClassesService classesService;
 
+    private final String absoluteURL = "admin/student";
     private TableSingle tableTemplate;
 
     @Autowired
@@ -61,14 +62,14 @@ public class AdminStudentController {
 
         this.tableTemplate = new TableSingle("Élèves", columnToLabel, columnDisplayed);
 
-        this.tableTemplate.setValuesFor("level", this.classLevelService::getAllClassLevelsIdxName);
-        this.tableTemplate.setValuesFor("studentclass", this.classesService::getAllClassesIdxName);
+        this.tableTemplate.setValuesFor("level", this.classLevelService::getAllIdxName);
+        this.tableTemplate.setValuesFor("studentclass", this.classesService::getAllIdxName);
         this.tableTemplate.setValuesFor("confirm", () -> { return Map.of(true, "Oui", false, "Non"); });
         this.tableTemplate.addFilter("level");
         this.tableTemplate.addFilter("studentclass");
         this.tableTemplate.addFilter("confirm");
-        this.tableTemplate.addLink("level", "studentclass", this.classLevelService.getAllClassLevelsClasses()); 
-        this.tableTemplate.addFilterLink("level", "studentclass", this.classLevelService.getAllClassLevelsClasses()); 
+        this.tableTemplate.addLink("level", "studentclass", this.classLevelService::getAllClasses); 
+        this.tableTemplate.addFilterLink("level", "studentclass", this.classLevelService::getAllClasses); 
     }
 
     /*
@@ -90,13 +91,8 @@ public class AdminStudentController {
     @GetMapping("/student")
     public String student(Model model) {
 
-        List<ClassLevel> allLevel = classLevelService.getAllClassLevels();
-        List<Classes> allClasses = classesService.getAllClasses();
-        model.addAttribute("levelListe", allLevel);
-        model.addAttribute("classesListe", allClasses);
-
-        tableTemplate.initModel(model, studentService.getAllStudents(), Student.class);
-        return "admin/student";  
+        tableTemplate.initModel(model, studentService.getAll(), Student.class);
+        return "admin/default"; 
     }
 
     
@@ -123,12 +119,12 @@ public class AdminStudentController {
 
         if( requestContentValidator.validateRequest(request) ){ //validate the request
 
-            Optional<ClassLevel> ocl = classLevelService.getClassLevelsById(Long.parseLong(request.getFirst("level")));
+            Optional<ClassLevel> ocl = classLevelService.getById(Long.parseLong(request.getFirst("level")));
             ClassLevel cl = ocl.isPresent() ? ocl.get() : null;
-            Optional<Classes> ocs = classesService.getClassesById(Long.parseLong(request.getFirst("studentclass")));
+            Optional<Classes> ocs = classesService.getById(Long.parseLong(request.getFirst("studentclass")));
             Classes oc = ocs.isPresent() ? ocs.get() : null;
             
-
+            
             Student details = new Student(
                 Long.parseLong(request.getFirst("id")),
                 request.getFirst("email"), 
@@ -141,6 +137,8 @@ public class AdminStudentController {
             );
             details.setConfirm(Boolean.parseBoolean(request.getFirst("confirm")));
 
+            Optional<Student> buffer = studentService.getByEmail(details.getEmail());
+
             if(details.getStudentClass() != null && details.getStudentClass().getLevel().getId() != details.getLevel().getId()){
                 //failed validation
                 model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
@@ -148,7 +146,13 @@ public class AdminStudentController {
 
                 tableTemplate.initModel(model, null, Student.class, false, requestContentValidator);
                 
-            }else if(studentService.updateStudent(details) != null){
+            }else if( buffer.isPresent() && buffer.get().getId() != details.getId()){
+                //processed
+                model.addAttribute("message", "L'email est déjà utilisé.");
+                model.addAttribute("messageType", "error");
+                tableTemplate.initModel(model, null, Student.class, true, requestContentValidator);
+            }
+            else if(studentService.update(details) != null){
                 //processed
                 model.addAttribute("message", "L'élève a été mit à jour.");
                 model.addAttribute("messageType", "success");
@@ -168,12 +172,8 @@ public class AdminStudentController {
             tableTemplate.initModel(model, null, Student.class, false, requestContentValidator);
         }
 
-        // Transfer all attributes from the Model to RedirectAttributes
-        for (String attributeName : model.asMap().keySet()) {
-            redirectAttributes.addFlashAttribute(attributeName, model.asMap().get(attributeName));
-        }
-
-        return "redirect:/admin/student";  
+        tableTemplate.prepareRedirect(model, redirectAttributes);
+        return "redirect:/"+absoluteURL;  
     }
 
     /*
@@ -191,16 +191,16 @@ public class AdminStudentController {
             "name", "max=100", //must be a string 100 char max, OPTIONAL
             "dateofbirth", "required|date", //must be a date yyyy-mm-dd, MANDATORY
             "confirm", "required|boolean", //must be a true or false, MANDATORY
-            "level", "default=0|int", // default set -1
-            "studentclass", "default=0|int" //default set -1
+            "level", "default=0|int", // default set 0
+            "studentclass", "default=0|int" //default set 0
             )
         );
 
         if( requestContentValidator.validateRequest(request) ){ //validate the request
 
-            Optional<ClassLevel> ocl = classLevelService.getClassLevelsById(Long.parseLong(request.getFirst("level")));
+            Optional<ClassLevel> ocl = classLevelService.getById(Long.parseLong(request.getFirst("level")));
             ClassLevel cl = ocl.isPresent() ? ocl.get() : null;
-            Optional<Classes> ocs = classesService.getClassesById(Long.parseLong(request.getFirst("studentclass")));
+            Optional<Classes> ocs = classesService.getById(Long.parseLong(request.getFirst("studentclass")));
             Classes oc = ocs.isPresent() ? ocs.get() : null;
 
 
@@ -208,7 +208,7 @@ public class AdminStudentController {
             Student details = new Student(
                 null,
                 request.getFirst("email"), 
-                "dateofbirth", 
+                request.getFirst("dateofbirth"), 
                 request.getFirst("surname"), 
                 request.getFirst("name"), 
                 cl, 
@@ -216,7 +216,19 @@ public class AdminStudentController {
                 oc
             );
 
-            if(studentService.createStudent(details) != null){
+            if(details.getStudentClass() != null && details.getStudentClass().getLevel().getId() != details.getLevel().getId()){
+                //failed validation
+                model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
+                model.addAttribute("messageType", "error");
+                tableTemplate.initModel(model, null, Student.class, true, requestContentValidator);
+                
+            }else if(studentService.getByEmail(details.getEmail()).isPresent()){
+                //processed
+                model.addAttribute("message", "L'email est déjà utilisé.");
+                model.addAttribute("messageType", "error");
+                tableTemplate.initModel(model, null, Student.class, true, requestContentValidator);
+            }
+            else if(studentService.create(details) != null){
                 //processed
                 model.addAttribute("message", "L'élève a été ajouté.");
                 model.addAttribute("messageType", "success");
@@ -236,11 +248,8 @@ public class AdminStudentController {
         }
 
         // Transfer all attributes from the Model to RedirectAttributes
-        for (String attributeName : model.asMap().keySet()) {
-            redirectAttributes.addFlashAttribute(attributeName, model.asMap().get(attributeName));
-        }
-
-        return "redirect:/admin/student";  
+        tableTemplate.prepareRedirect(model, redirectAttributes);
+        return "redirect:/"+absoluteURL;  
     }
 
     /*
@@ -259,7 +268,7 @@ public class AdminStudentController {
 
         if( requestContentValidator.validateRequest(request) ){ //validate the request
 
-            studentService.deleteStudent(Long.parseLong(request.getFirst("id")));
+            studentService.delete(Long.parseLong(request.getFirst("id")));
             model.addAttribute("message", "L'élève a été supprimé.");
             model.addAttribute("messageType", "success");
  
@@ -271,16 +280,8 @@ public class AdminStudentController {
         }
 
         // Transfer all attributes from the Model to RedirectAttributes
-        for (String attributeName : model.asMap().keySet()) {
-            redirectAttributes.addFlashAttribute(attributeName, model.asMap().get(attributeName));
-        }
-
-        return "redirect:/admin/student";  
-    }
-
-    @GetMapping("/ce/lien/nest/pas/suspect")
-    public String displayAllStudent(Model model) { 
-        return "security";  
+        tableTemplate.prepareRedirect(model, redirectAttributes);
+        return "redirect:/"+absoluteURL;  
     }
 
 }

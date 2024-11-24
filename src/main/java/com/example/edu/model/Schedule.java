@@ -45,7 +45,7 @@ public class Schedule {
         referencedColumnName = "id",
         nullable = false
     )
-    private Rooms room;
+    private Room room;
 
     @ManyToOne
     @JoinColumn(
@@ -61,7 +61,7 @@ public class Schedule {
     public Schedule() {
     }
 
-    public Schedule(Courses course, ClassLevel classLevel, LocalDateTime start, LocalDateTime end, Rooms room, Teacher teacher) {
+    public Schedule(Courses course, ClassLevel classLevel, LocalDateTime start, LocalDateTime end, Room room, Teacher teacher) {
         this.course = course;
         this.classLevel = classLevel;
         this.start = start;
@@ -104,11 +104,11 @@ public class Schedule {
         this.end = end;
     }
 
-    public Rooms getRoom() {
+    public Room getRoom() {
         return room;
     }
 
-    public void setRoom(Rooms room) {
+    public void setRoom(Room room) {
         this.room = room;
     }
 

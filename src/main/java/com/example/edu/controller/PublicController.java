@@ -57,7 +57,7 @@ public class PublicController {
         if(requestValidator.validateRequest(params)){
 
             Student newStudent = new Student(null, params.getFirst("username"), params.getFirst("password"), params.getFirst("name"), params.getFirst("surname"), null, params.getFirst("dateofbirth"), null);
-            this.studentService.createStudent(newStudent);
+            this.studentService.create(newStudent);
 
             model.addAttribute("title", "Inscription termine");
             model.addAttribute("message", "Ton inscription est terminée, tu recevras un mail lorsque ta demande aura été validée.");

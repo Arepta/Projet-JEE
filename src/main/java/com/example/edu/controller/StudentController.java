@@ -34,7 +34,7 @@ public String showDashboard(
     String email = authentication.getName();
     System.out.println("Utilisateur connecté : " + email);
 
-    Student student = studentService.getStudentsByEmail(email).orElse(null);
+    Student student = studentService.getByEmail(email).orElse(null);
     if (student == null) {
         System.out.println("Aucun étudiant trouvé pour l'email : " + email);
         model.addAttribute("errorMessage", "Aucune information trouvée pour l'utilisateur connecté.");

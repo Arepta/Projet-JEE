@@ -54,7 +54,7 @@ public class Min extends Rule{
                 }
             }
             catch(Exception e){
-                if( v.length() < min){
+                if(v == null || v.length() < min){
                     return false;
                 }
             }

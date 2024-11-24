@@ -13,7 +13,7 @@
 
         <div class="table-data">
             <div class="table-content-title">
-                <h2>Données</h2>
+                <h2 id="table-content-number"></h2>
 
                 <c:if test="${_tableSingle_Filters != null}">
                     <div class="table-content-filters">
@@ -96,9 +96,9 @@
                             <c:if test="${ _tableSingle_Type[attr.value] == null }">
                                 <select class="table-form-input" name="${attr.key}" <c:if test="${ fn:contains( _tableSingle_ColumnLock_tableSingle_ColumnLock, attr.key ) }">${'hidden readonly'}</c:if> onchange="table_onChangeSelectValue(this)" >
                                     <c:if test="${_tableSingle_NGValues[attr.key] != null}">
-                                        <option value="" selected></option>
+                                        <option value=""  <c:if test="${_tableSingle_OldField[attr.key] == null || _tableSingle_OldField[attr.key].equals('')}">${'selected'}</c:if>></option>
                                         <c:forEach var="map" items="${_tableSingle_NGValues[attr.key]}">
-                                            <option value="${map.key}">${map.value}</option>
+                                            <option value="${map.key}"  <c:if test="${_tableSingle_OldField[attr.key] == map.key}">${'selected'}</c:if>>${map.value}</option>
                                         </c:forEach>
                                     </c:if>  
                                 </select>
@@ -131,14 +131,12 @@
 
 <script src="/js/template/tableSingle.js"></script>
 <script>    
-    table_init('${_tableSingle_Data}', '${_tableSingle_Links}', '${_tableSingle_LinksData}');
+    table_init('${_tableSingle_Data}', '${_tableSingle_Links}', '${_tableSingle_LinksData}', '${_tableSingle_NGValuesJSON}');
     table_setPage(0);
+    table_setFormMode(true, false);
 
-    <c:if test="${ _tableSingle_SetCreate }">
-        document.getElementById('table-create-form-actions').style = "";
-        document.getElementById('table-edit-form-actions').style = "display:none;";
-        document.getElementById('table-form-method').value = 'POST';
-        document.getElementById('table-viewer-content-title').innerHTML = 'Nouveau';
+    <c:if test="${ !_tableSingle_SetCreate}">
+        table_setFormMode(false, false);
     </c:if>
 
 </script>

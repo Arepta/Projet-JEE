@@ -79,7 +79,10 @@ public class Classes {
         for (Field field : clazz.getDeclaredFields()) {
             try{
                 field.setAccessible(true);
-                if(field.get(this) instanceof Program){
+                if(field.get(this) instanceof ClassLevel){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((ClassLevel)field.get(this)).getId() + ",");
+                }
+                else if(field.get(this) instanceof Program){
                     JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Program)field.get(this)).getId() + ",");
                 }
                 else if(field.get(this) == null || (!(field.get(this) instanceof String) && !(field.get(this) instanceof LocalDate)) ){

@@ -49,14 +49,12 @@ public class Max extends Rule{
                     vParsed =  Double.valueOf(v).doubleValue();
                 }   
 
-                System.out.println(vParsed);
-                System.out.println(max);
                 if( vParsed > max){
                     return false;
                 }
             }
             catch(Exception e){
-                if( v.length() > max){
+                if(v != null && v.length() > max){
                     return false;
                 }
             }

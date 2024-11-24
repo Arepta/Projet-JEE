@@ -25,25 +25,25 @@ public class StudentService {
     
     }
 
-    public List<Student> getAllStudents() {
+    public List<Student> getAll() {
         return this.studentRepository.findAll(); //build in
     }
 
-    public Optional<Student> getStudentsById(Long id) {
+    public Optional<Student> getById(Long id) {
         return this.studentRepository.findById(id);  //build in
     }
 
-    public Optional<Student> getStudentsByEmail(String email) {
+    public Optional<Student> getByEmail(String email) {
         return this.studentRepository.findByEmail(email);  //build in
     }
 
-    public Student createStudent(Student StudentDetails) {
+    public Student create(Student StudentDetails) {
         StudentDetails.setPassword(passwordEncoder.encode(StudentDetails.getPassword()));
         
         return this.studentRepository.save(StudentDetails);  //build in
     }
 
-    public Student updateStudent(Student StudentDetails) {
+    public Student update(Student StudentDetails) {
         Optional<Student> optionalStudent = this.studentRepository.findById(StudentDetails.getId());
 
         if (optionalStudent.isPresent()) {
@@ -63,7 +63,7 @@ public class StudentService {
         return null;
     }
 
-    public void deleteStudent(Long id) {
+    public void delete(Long id) {
         this.studentRepository.deleteById(id);
     }
 }

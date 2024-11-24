@@ -14,9 +14,9 @@ public class TableSingle extends Template{
 
     private List<String> lockColumns;
     private List<String> filters;
-    private Map<String, Supplier<Map<?, String>>> nonGeneriqueValues;
+    private Map<String, Supplier<Map<?, String>> > nonGeneriqueValues;
     private Map<String, String> links;
-    private Map<String, Map<?,List<?>>> linksData;
+    private Map<String, Supplier< Map<Long,List<Long>> >> linksData;
 
     public TableSingle(String title, Map<String, String> columnToLabel, List<String> columnDisplayed){
         super(title, columnToLabel, columnDisplayed);
@@ -36,6 +36,12 @@ public class TableSingle extends Template{
             buffer_nonGeneriqueValues.put(key, nonGeneriqueValues.get(key).get());
         }
 
+        Map<String, Map<Long,List<Long>> > buffer_linksData = new HashMap<>();
+
+        for(String key : this.linksData.keySet()){
+            buffer_linksData.put(key, linksData.get(key).get());
+        }
+
         model.addAttribute("_tableSingle_Title", this.title); 
         model.addAttribute("_tableSingle_DataHeader", getClassAttributes(dataClass)); 
         model.addAttribute("_tableSingle_ColumnLock", this.lockColumns); 
@@ -43,10 +49,13 @@ public class TableSingle extends Template{
         model.addAttribute("_tableSingle_ColumnDisplayed", this.columnDisplayed); 
         model.addAttribute("_tableSingle_Data", data); 
         model.addAttribute("_tableSingle_NGValues", buffer_nonGeneriqueValues); 
+        model.addAttribute("_tableSingle_NGValuesJSON", this.gson.toJson(buffer_nonGeneriqueValues)); 
         model.addAttribute("_tableSingle_Filters", filters); 
         model.addAttribute("_tableSingle_Links", this.gson.toJson(this.links)); 
-        model.addAttribute("_tableSingle_LinksData", this.gson.toJson(this.linksData)); 
+        model.addAttribute("_tableSingle_LinksData", this.gson.toJson(buffer_linksData)); 
         model.addAttribute("_tableSingle_Type", this.typeJavaToHTML); 
+        model.addAttribute("_tableSingle_SetCreate", true); 
+
     }
 
     public <T> void initModel(Model model, List<T> data,  Class<T> dataClass, boolean isCreate, Validator requestValiadtor){
@@ -69,13 +78,13 @@ public class TableSingle extends Template{
         this.nonGeneriqueValues.put(column, MethodForvalueToLabel);
     }
 
-    public <K,V> void addLink(String From, String To, Map<K,List<V>> FromValueOfToValues){
+    public void addLink(String From, String To, Supplier<Map<Long,List<Long>>> FromValueOfToValues){
         this.links.put(From, To);
-        this.linksData.put(From+"-"+To, new HashMap<>(FromValueOfToValues));
+        this.linksData.put(From+"-"+To, FromValueOfToValues);
     }
 
-    public <K,V> void addFilterLink(String From, String To, Map<K,List<V>> FromValueOfToValues){
+    public void addFilterLink(String From, String To, Supplier<Map<Long,List<Long>>> FromValueOfToValues){
         this.links.put("filter-"+From, "filter-"+To);
-        this.linksData.put("filter-"+From+"-"+"filter-"+To, new HashMap<>(FromValueOfToValues));
+        this.linksData.put("filter-"+From+"-"+"filter-"+To,FromValueOfToValues);
     }
 }

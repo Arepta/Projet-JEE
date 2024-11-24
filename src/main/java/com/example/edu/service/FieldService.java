@@ -21,12 +21,12 @@ public class FieldService {
     
     }
 
-    public List<FieldTeacher> getAllField() {
+    public List<FieldTeacher> getAll() {
         return this.FieldRepository.findAll(); //build in
     }
     
 
-    public Map<Long, String> getAllFieldIdxName() {
+    public Map<Long, String> getAllIdxName() {
 
         List<FieldTeacher> b = this.FieldRepository.findAll();
         Map<Long, String> r = new HashMap<>();
@@ -36,19 +36,19 @@ public class FieldService {
         return r; //build in
     }
 
-    public Optional<FieldTeacher> getFieldById(Long id) {
+    public Optional<FieldTeacher> getById(Long id) {
         return this.FieldRepository.findById(id);  //build in
     }
 
-    public Optional<FieldTeacher> getFieldByName(String name) {
+    public Optional<FieldTeacher> getByName(String name) {
         return this.FieldRepository.findByName(name);  //build in
     }
 
-    public FieldTeacher createField(FieldTeacher FieldDetails) {
+    public FieldTeacher create(FieldTeacher FieldDetails) {
         return this.FieldRepository.save(FieldDetails);  //build in
     }
 
-    public FieldTeacher updateField(FieldTeacher FieldDetails) {
+    public FieldTeacher update(FieldTeacher FieldDetails) {
         Optional<FieldTeacher> optionalField = this.FieldRepository.findById(FieldDetails.getId());
 
         if (optionalField.isPresent()) {
@@ -62,7 +62,7 @@ public class FieldService {
         return null;
     }
 
-    public void deleteField(Long id) {
+    public void delete(Long id) {
         this.FieldRepository.deleteById(id);
     }
 }

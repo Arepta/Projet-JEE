@@ -24,7 +24,7 @@ public class Lenght extends Rule{
         
         for (String v : body.get(name)) {
 
-            if( v.length() != size){
+            if((v == null && size != 0) || (v != null && v.length() != size)){
                 return false;
             }
 

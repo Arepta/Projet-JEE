@@ -1,4 +1,4 @@
-package com.example.edu.controller;
+package com.example.edu.controller.admin;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +51,7 @@ public class AdminTeacherController {
 
         this.tableTemplate = new TableSingle("Professeur", columnToLabel, columnDisplayed);
 
-        this.tableTemplate.setValuesFor("field", this.FieldService::getAllFieldIdxName);
+        this.tableTemplate.setValuesFor("field", this.FieldService::getAllIdxName);
         this.tableTemplate.addFilter("field");
     }
 
@@ -74,7 +74,7 @@ public class AdminTeacherController {
     @GetMapping("/teacher")
     public String teacher(Model model) {
 
-        List<FieldTeacher> allLevel = FieldService.getAllField();
+        List<FieldTeacher> allLevel = FieldService.getAll();
         model.addAttribute("FieldListe", allLevel);
 
         tableTemplate.initModel(model, TeacherService.getAllTeachers(), Teacher.class);
@@ -102,7 +102,7 @@ public class AdminTeacherController {
 
         if( requestContentValidator.validateRequest(request) ){ //validate the request
 
-            Optional<FieldTeacher> ocl = FieldService.getFieldById(Long.parseLong(request.getFirst("field")));
+            Optional<FieldTeacher> ocl = FieldService.getById(Long.parseLong(request.getFirst("field")));
             FieldTeacher cl = ocl.isPresent() ? ocl.get() : null;
             
 
@@ -162,7 +162,7 @@ public class AdminTeacherController {
 
         if( requestContentValidator.validateRequest(request) ){ //validate the request
 
-            Optional<FieldTeacher> ocl = FieldService.getFieldById(Long.parseLong(request.getFirst("field")));
+            Optional<FieldTeacher> ocl = FieldService.getById(Long.parseLong(request.getFirst("field")));
             FieldTeacher cl = ocl.isPresent() ? ocl.get() : null;
 
 
@@ -238,8 +238,4 @@ public class AdminTeacherController {
         return "redirect:/admin/teacher";  
     }
 
-    @GetMapping("/teacher/ce/lien/nest/pas/suspect")
-    public String displayAllTeacher(Model model) { 
-        return "security";  
-    }
 }

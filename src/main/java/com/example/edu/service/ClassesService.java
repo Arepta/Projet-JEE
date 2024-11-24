@@ -22,62 +22,70 @@ public class ClassesService {
     
     }
 
-    public List<Classes> getAllClasses() {
-        return this.classesRepository.findAll(); //build in
-    }
-
-    public Map<Long, String> getAllClassesIdxName() {
-
+    public List<Classes> getAll() {
         List<Classes> b = this.classesRepository.findAll();
-        Map<Long, String> r = new HashMap<>();
         Map<String, Integer> prCount = new HashMap<>();
+        String key;
         for(Classes cl : b){
-            
-            if(prCount.get(cl.getProgram().getName()) == null){
-                prCount.put(cl.getProgram().getName(), 1);
+
+            key = (cl.getLevel() == null ? "" : cl.getLevel().getName()+" ")+ cl.getProgram().getName();
+            if(prCount.get(key) == null){
+                prCount.put(key, 1);
             }
             else{
-                prCount.put(cl.getProgram().getName(), prCount.get(cl.getProgram().getName())+1);
+                prCount.put(key, prCount.get(key)+1);
             }
 
             if(cl.getName() == null){
-                r.put(cl.getId(), cl.getProgram().getName()+" Groupe "+ prCount.get(cl.getProgram().getName()));
+                cl.setName(key+" Groupe "+ prCount.get(key));
+                System.out.println(cl);
             }
-            else{
-                r.put(cl.getId(), cl.getName());
-            }
+
             
+        }
+        System.out.println(b);
+        return b; //build in
+    }
+
+    public Map<Long, String> getAllIdxName() {
+
+        List<Classes> b = this.getAll();
+        Map<Long, String> r = new HashMap<>();
+        for(Classes cl : b){
+            r.put(cl.getId(), cl.getName());
         }
         return r; //build in
     }
 
-    public Optional<Classes> getClassesById(Long id) {
+    public Optional<Classes> getById(Long id) {
         return this.classesRepository.findById(id);  //build in
     }
 
-    public Optional<Classes> getClassesByName(String name) {
+    public Optional<Classes> getByName(String name) {
         return this.classesRepository.findByName(name);  //build in
     }
 
-    public Classes createClasses(Classes ClassesDetails) {
+    public Classes create(Classes ClassesDetails) {
         return this.classesRepository.save(ClassesDetails);  //build in
     }
 
-    public Classes updateClasses(Classes ClassesDetails) {
-        // Optional<Classes> optionalClasses = this.classesRepository.findById(ClassesDetails.getId());
+    public Classes update(Classes ClassesDetails) {
+        Optional<Classes> optionalClasses = this.classesRepository.findById(ClassesDetails.getId());
 
-        // if (optionalClasses.isPresent()) {
-        //     Classes updatedClasses = optionalClasses.get();
+        if (optionalClasses.isPresent()) {
+            Classes updatedClasses = optionalClasses.get();
 
-        //     updatedClasses.setName(ClassesDetails.getName());
+            updatedClasses.setName(ClassesDetails.getName());
+            updatedClasses.setLevel(ClassesDetails.getLevel());
+            updatedClasses.setProgram(ClassesDetails.getProgram());
 
-        //     return this.classesRepository.save(updatedClasses);
-        // }
+            return this.classesRepository.save(updatedClasses);
+        }
 
         return null;
     }
 
-    public void deleteClasses(Long id) {
+    public void delete(Long id) {
         this.classesRepository.deleteById(id);
     }
 }

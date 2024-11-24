@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "rooms")
-public class Rooms {
+public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +20,10 @@ public class Rooms {
 
     // Constructors
 
-    public Rooms() {
+    public Room() {
     }
 
-    public Rooms(Long id, String name, Integer size) {
+    public Room(Long id, String name, Integer size) {
         this.id = id;
         this.name = name;
         this.size = size;

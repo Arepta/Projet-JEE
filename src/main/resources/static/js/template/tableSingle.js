@@ -1,4 +1,4 @@
-function table_init(dataToParse, links, linksData){
+function table_init(dataToParse, links, linksData, NGValuesToLabel){
     window._table_data = JSON.parse(dataToParse);
     window._table_onDisplay = window._table_data;
     window._table_currentPage = 0;
@@ -6,6 +6,7 @@ function table_init(dataToParse, links, linksData){
     window._table_head = [];
     window._table_links = JSON.parse(links);
     window._table_linksData = JSON.parse(linksData);
+    window._table_NGValuesToLabel = JSON.parse(NGValuesToLabel);
 
 
     let head = document.getElementById("table-data-head");
@@ -41,6 +42,7 @@ function table_onChangeSelectValue(trigger){
     let to = "";
     let selectTo = null;
     let values = null;
+    let valueOk = false;
 
     if(!window._table_links[from]){
         return;
@@ -57,13 +59,17 @@ function table_onChangeSelectValue(trigger){
         
         if(values === undefined || values.includes(bvl)){
             selectTo.children[i].hidden = false;
+            valueOk = selectTo.value === selectTo.children[i].value || valueOk;
+            console.log(selectTo.value, valueOk, (isNaN(selectTo.children[i].value) ? selectTo.children[i].value : parseInt(selectTo.children[i].value)))
         }
         else{
             selectTo.children[i].hidden = true;
+
+
+
         }
     }
-
-    selectTo.value = selectTo.children[0];
+    selectTo.value = valueOk ? selectTo.value : selectTo.children[0].value;
     if(selectTo.onchange){
         selectTo.onchange();
     }
@@ -105,7 +111,7 @@ function table_filter(){
 function table_setPage(number){
 
     window._table_currentPage = number;
-
+    
     let container = document.getElementById("table-data-body");
     let line = "";
 
@@ -131,7 +137,13 @@ function table_setPage(number){
         else{
             line = `<tr onclick='table_setForm(${window._table_onDisplay[i]["id"]})'>`;
             for(let attr=0; attr<window._table_head.length; attr++){
-                line += `<td>${window._table_onDisplay[i][window._table_head[attr]]}</td>`;
+
+                if(window._table_head[attr] in window._table_NGValuesToLabel && window._table_onDisplay[i][window._table_head[attr]] != null){
+                    line += `<td>${window._table_NGValuesToLabel[window._table_head[attr]][window._table_onDisplay[i][window._table_head[attr]]]}</td>`;
+                }
+                else{
+                    line += `<td>${window._table_onDisplay[i][window._table_head[attr]]}</td>`;
+                }
             }
 
             line += "</tr>";
@@ -142,6 +154,7 @@ function table_setPage(number){
     }
 
     document.getElementById("table-data-action-page").innerHTML = window._table_currentPage;
+    document.getElementById("table-content-number").innerHTML = "("+window._table_onDisplay.length+") Donnée(s)";
 }
 
 function table_nextPage(){
@@ -166,7 +179,7 @@ function table_setForm(id){
     let data = null;
 
 
-    for(let i=0; i<inputs.length; i++){
+    for(let i=0; i<window._table_data.length; i++){
         if(window._table_data[i]["id"] === id){
             data = window._table_data[i];
             break;
@@ -174,6 +187,7 @@ function table_setForm(id){
     }
 
     for(let i=0; i<inputs.length; i++){
+        
         inputs[i].value = data[inputs[i].getAttribute("name")];
         if(inputs[i].onchange){
             inputs[i].onchange();
@@ -203,12 +217,12 @@ function table_clearForm(){
     }
 }
 
-function table_setFormMode(isCreate){
+function table_setFormMode(isCreate, clear=true){
     document.getElementById('table-create-form-actions').style = !isCreate ? "display:none;" : "";
     document.getElementById('table-edit-form-actions').style = isCreate ? "display:none;" : "";
     document.getElementById('table-form-method').value = isCreate ? 'POST' : 'PUT';
     document.getElementById('table-viewer-content-title').innerHTML = isCreate ? 'Nouveau' : 'Modifier';
-    if(isCreate) table_clearForm();
+    if(clear) table_clearForm();
 
 }
 

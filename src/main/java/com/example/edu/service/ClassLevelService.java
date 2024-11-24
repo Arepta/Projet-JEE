@@ -22,11 +22,11 @@ public class ClassLevelService {
     
     }
 
-    public List<ClassLevel> getAllClassLevels() {
+    public List<ClassLevel> getAll() {
         return this.classLevelRepository.findAll(); //build in
     }
 
-    public Map<Long, String> getAllClassLevelsIdxName() {
+    public Map<Long, String> getAllIdxName() {
 
         List<ClassLevel> b = this.classLevelRepository.findAll();
         Map<Long, String> r = new HashMap<>();
@@ -36,7 +36,7 @@ public class ClassLevelService {
         return r; //build in
     }
 
-    public Map<Long, List<Long>> getAllClassLevelsClasses() {
+    public Map<Long, List<Long>> getAllClasses() {
 
         List<ClassLevel> b = this.classLevelRepository.findAll();
         Map<Long, List<Long>> r = new HashMap<>();
@@ -46,20 +46,19 @@ public class ClassLevelService {
         return r; //build in
     }
 
-
-    public Optional<ClassLevel> getClassLevelsById(Long id) {
+    public Optional<ClassLevel> getById(Long id) {
         return this.classLevelRepository.findById(id);  //build in
     }
 
-    public Optional<ClassLevel> getClassLevelsByName(String name) {
+    public Optional<ClassLevel> getByName(String name) {
         return this.classLevelRepository.findByName(name);  //build in
     }
 
-    public ClassLevel createClassLevel(ClassLevel ClassLevelDetails) {
+    public ClassLevel create(ClassLevel ClassLevelDetails) {
         return this.classLevelRepository.save(ClassLevelDetails);  //build in
     }
 
-    public ClassLevel updateClassLevel(ClassLevel ClassLevelDetails) {
+    public ClassLevel update(ClassLevel ClassLevelDetails) {
         Optional<ClassLevel> optionalClassLevel = this.classLevelRepository.findById(ClassLevelDetails.getId());
 
         if (optionalClassLevel.isPresent()) {
@@ -73,7 +72,7 @@ public class ClassLevelService {
         return null;
     }
 
-    public void deleteClassLevel(Long id) {
+    public void delete(Long id) {
         this.classLevelRepository.deleteById(id);
     }
 }

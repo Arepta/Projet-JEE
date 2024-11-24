@@ -1,5 +1,7 @@
 package com.example.edu.model;
 
+import java.lang.reflect.Field;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -41,4 +43,22 @@ public class Program {
         this.name = name;
     }
     
+    @Override
+    public String toString() {
+        String JSON = "";
+        Class<?> clazz = this.getClass();
+        for (Field field : clazz.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                if (field.get(this) == null || !(field.get(this) instanceof String)) {
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + field.get(this) + ",");
+                } else {
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\": \"" + field.get(this) + "\",");
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return "{" + JSON.substring(0, JSON.length() - 1) + "}";
+    }
 }

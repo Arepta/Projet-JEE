@@ -12,7 +12,8 @@ public class Default extends Rule{
     }
 
     public boolean check(String name, MultiValueMap<String, String> body) throws InvalidParameterException{
-        if(body.get(name).size() == 0){
+        if(body.get(name).size() == 0 || (body.get(name).size() == 1 && body.get(name).get(0).equals(""))){
+            body.get(name).clear();
             if(params.equals("NULL")){
                 body.get(name).add(null);
             }

@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.google.gson.Gson;
 
 
@@ -115,6 +118,13 @@ public abstract class Template {
         }
 
         return updatedStringList;
+    }
+
+    public void prepareRedirect(Model model, RedirectAttributes redirectAttributes){
+        // Transfer all attributes from the Model to RedirectAttributes
+        for (String attributeName : model.asMap().keySet()) {
+            redirectAttributes.addFlashAttribute(attributeName, model.asMap().get(attributeName));
+        }
     }
 
 }
