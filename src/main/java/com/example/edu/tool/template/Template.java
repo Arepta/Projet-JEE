@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.edu.model.ProgramsContent.ProgramsContentId;
 import com.google.gson.Gson;
 
 
@@ -31,7 +32,8 @@ public abstract class Template {
         Integer.class.getName(), "number",
         int.class.getName(), "number",
         double.class.getName(), "number",
-        Double.class.getName(), "number"
+        Double.class.getName(), "number",
+        ProgramsContentId.class.getName(), "text"
     );
 
     protected String title; //title

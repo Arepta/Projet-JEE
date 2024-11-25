@@ -1,0 +1,230 @@
+/* General Reset */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Container Styling */
+.schedule-container {
+    padding: 2rem;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Title Styling */
+.schedule-title h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333333;
+    margin: 0;
+}
+
+/* Content Layout */
+.schedule-content {
+    display: flex;
+    gap: 2rem;
+}
+
+/* Data Section */
+.schedule-data {
+    flex: 1;
+}
+
+.schedule-content-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.schedule-content-title h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #555555;
+    margin: 0;
+}
+
+.schedule-content-actions a,
+.schedule-content-actions button {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #007aff;
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.schedule-content-actions button {
+    border: 1px solid #007aff;
+    color: #007aff;
+}
+
+.schedule-content-actions a:hover,
+.schedule-content-actions button:hover {
+    background-color: rgba(0, 122, 255, 0.1);
+}
+
+/* Filters Section */
+.schedule-content-filters {
+    display: flex;
+    gap: 1rem;
+}
+
+.schedule-data-filter {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #d0d0d0;
+    background-color: #ffffff;
+    color: #555555;
+}
+
+/* Schedule Layout (Grid) */
+.schedule-data-container {
+
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for the 7 days */
+    gap: 1rem;
+    background-color: #f5f5f7;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.schedule-data-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+
+.schedule-data-day {
+    background-color: #f5f5f7;
+    font-weight: 600;
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: 6px;
+}
+
+.schedule-data-day span {
+    display: block;
+    font-size: 1rem;
+    color: #333;
+}
+
+.schedule-data-body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(12, 60px);
+    font-size: 12px;
+    border-top: 1px solid #8b8b8b;
+    border-left: 1px solid #8b8b8b;
+}
+
+.schedule-data-course {
+    background-color: #007aff;
+    color: #fff;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.schedule-data-course-void {
+    border-bottom: 1px solid #8b8b8b;
+    border-right: 1px solid #8b8b8b;
+    overflow: hidden;
+}
+
+.schedule-data-body p{
+    margin: 0px;
+    margin-left: 5px;
+}
+
+/* Pagination Actions */
+.schedule-data-action {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.schedule-data-action button {
+    font-size: 0.9rem;
+    padding: 0.25rem 1rem;
+    color: #007aff;
+    background-color: #f9f9fa;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.schedule-data-action button:hover {
+    background-color: #f0f0f5;
+}
+
+/* Viewer Section */
+.schedule-viewer {
+    width: 300px;
+    flex-shrink: 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: #f9f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    height: fit-content;
+}
+
+.schedule-viewer-error p {
+    color: #d0021b;
+    font-size: 0.85rem;
+    margin: 0.5rem 0;
+}
+
+/* Form Styling */
+.schedule-form-input {
+    width: 90%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease;
+    margin-bottom: 1rem;
+}
+
+.schedule-form-input:focus {
+    border-color: #007aff;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+    outline: none;
+}
+
+/* Error State */
+.schedule-form-input.error {
+    border-color: #d0021b;
+    background-color: #ffe6e6;
+}
+
+/* Form Buttons */
+.schedule-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.schedule-form-actions button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #007aff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.schedule-form-actions button:hover {
+    background-color: #005bb5;
+}

@@ -1,76 +1,85 @@
 package com.example.edu.model;
 
-
-import java.time.LocalDateTime;
-import java.lang.reflect.Field;
-
 import jakarta.persistence.*;
+
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "schedule")
-@IdClass(ScheduleId.class)
 public class Schedule {
 
     @Id
-    @ManyToOne
-    @JoinColumn(
-        name = "course",
-        foreignKey = @ForeignKey(name = "fk_schedule_course"),
-        referencedColumnName = "id",
-        nullable = false
-    )
-    private Courses course;
-
-    @Id
-    @ManyToOne
-    @JoinColumn(
-        name = "class",
-        foreignKey = @ForeignKey(name = "fk_schedule_class"),
-        referencedColumnName = "id",
-        nullable = false
-    )
-    private ClassLevel classLevel;
-
-    @Id
-    @Column(nullable = false)
-    private LocalDateTime start;
-
-    @Column(nullable = false)
-    private LocalDateTime end;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(
-        name = "room",
-        foreignKey = @ForeignKey(name = "fk_schedule_room"),
-        referencedColumnName = "id",
-        nullable = false
-    )
+    @JoinColumn(name = "room", nullable = false, referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_schedule_room"))
     private Room room;
 
     @ManyToOne
-    @JoinColumn(
-        name = "teacher",
-        foreignKey = @ForeignKey(name = "fk_schedule_teacher"),
-        referencedColumnName = "id",
-        nullable = false
-    )
+    @JoinColumn(name = "class", nullable = false, referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_schedule_class"))
+    private Classes classes;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher", nullable = false,  referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_schedule_teacher"))
     private Teacher teacher;
 
+    @ManyToOne
+    @JoinColumn(name = "course", nullable = false,  referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_schedule_course"))
+    private Courses course;
+
+    @Column(name = "start", nullable = false)
+    private LocalDateTime start;
+
+    @Column(name = "end", nullable = false)
+    private LocalDateTime end;
+
     // Constructors
+    public Schedule() {}
 
-    public Schedule() {
-    }
-
-    public Schedule(Courses course, ClassLevel classLevel, LocalDateTime start, LocalDateTime end, Room room, Teacher teacher) {
+    public Schedule(Long id, Room room, Classes classes, Teacher teacher, Courses course, LocalDateTime start, LocalDateTime end) {
+        this.id = id;
+        this.room = room;
+        this.classes = classes;
+        this.teacher = teacher;
         this.course = course;
-        this.classLevel = classLevel;
         this.start = start;
         this.end = end;
-        this.room = room;
-        this.teacher = teacher;
     }
 
-    // Getters and Setters
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public Classes getClasses() {
+        return classes;
+    }
+
+    public void setClasses(Classes classes) {
+        this.classes = classes;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
 
     public Courses getCourse() {
         return course;
@@ -78,14 +87,6 @@ public class Schedule {
 
     public void setCourse(Courses course) {
         this.course = course;
-    }
-
-    public ClassLevel getClassLevel() {
-        return classLevel;
-    }
-
-    public void setClassLevel(ClassLevel classLevel) {
-        this.classLevel = classLevel;
     }
 
     public LocalDateTime getStart() {
@@ -104,38 +105,38 @@ public class Schedule {
         this.end = end;
     }
 
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
     @Override
-    public String toString() {
+    public String toString(){
         String JSON = "";
         Class<?> clazz = this.getClass();
         for (Field field : clazz.getDeclaredFields()) {
-            try {
+            try{
                 field.setAccessible(true);
-                if (field.get(this) == null || !(field.get(this) instanceof String)) {
+                if(field.get(this) instanceof Room){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Room)field.get(this)).getId() + ",");
+                }
+                else if(field.get(this) instanceof Classes){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Classes)field.get(this)).getId() + ",");
+                }
+                else if(field.get(this) instanceof Teacher){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Teacher)field.get(this)).getId() + ",");
+                }
+                else if(field.get(this) instanceof Courses){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Courses)field.get(this)).getId() + ",");
+                }
+                else if(field.get(this) == null || (!(field.get(this) instanceof String) && !(field.get(this) instanceof LocalDateTime)) ){
                     JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + field.get(this) + ",");
-                } else {
+                }
+                else{
                     JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\": \"" + field.get(this) + "\",");
                 }
-            } catch (IllegalAccessException e) {
+                
+            } 
+            catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-        return "{" + JSON.substring(0, JSON.length() - 1) + "}";
+
+        return "{"+JSON.substring(0, JSON.length()-1)+"}";
     }
 }

@@ -2,7 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<link rel="stylesheet" type="text/css" href="/css/admin/tableDefault.css">
+<link rel="stylesheet" type="text/css" href="/css/template/tableDefault.css">
 
 <div class="table-container">
     <div class="table-title">
@@ -17,7 +17,6 @@
 
                 <c:if test="${_tableSingle_Filters != null}">
                     <div class="table-content-filters">
-                        <span>Filtre - </span>
                         <c:forEach var="filter" items="${_tableSingle_Filters}">
 
                             <div class="table-data-filter-container">
@@ -88,13 +87,13 @@
                     <div class="table-form-input-wrapper <c:if test="${_tableSingle_ErrorField[attr.key] != null}">${'error'}</c:if>">
             
                         <c:if test="${ !attr.key.equals('password')}">
-                            <label for="${attr.key}"></label>
+                            <label for="${attr.key}">
                                 <c:if test="${_tableSingle_ColumnToLabel[attr.key] != null && !fn:contains( _tableSingle_ColumnLock, attr.key )}">${_tableSingle_ColumnToLabel[attr.key]} :</c:if>  
                                 <c:if test="${_tableSingle_ColumnToLabel[attr.key] == null && !fn:contains( _tableSingle_ColumnLock, attr.key )}">${attr.key} :</c:if>
                             </label>
     
                             <c:if test="${ _tableSingle_Type[attr.value] == null }">
-                                <select class="table-form-input" name="${attr.key}" <c:if test="${ fn:contains( _tableSingle_ColumnLock_tableSingle_ColumnLock, attr.key ) }">${'hidden readonly'}</c:if> onchange="table_onChangeSelectValue(this)" >
+                                <select class="table-form-input" name="${attr.key}" <c:if test="${fn:contains( _tableSingle_ColumnLock, attr.key )}">${'hidden readonly'}</c:if> onchange="table_onChangeSelectValue(this)" >
                                     <c:if test="${_tableSingle_NGValues[attr.key] != null}">
                                         <option value=""  <c:if test="${_tableSingle_OldField[attr.key] == null || _tableSingle_OldField[attr.key].equals('')}">${'selected'}</c:if>></option>
                                         <c:forEach var="map" items="${_tableSingle_NGValues[attr.key]}">
@@ -133,11 +132,7 @@
 <script>    
     table_init('${_tableSingle_Data}', '${_tableSingle_Links}', '${_tableSingle_LinksData}', '${_tableSingle_NGValuesJSON}');
     table_setPage(0);
-    table_setFormMode(true, false);
-
-    <c:if test="${ !_tableSingle_SetCreate}">
-        table_setFormMode(false, false);
-    </c:if>
+    table_setFormMode('${ _tableSingle_SetCreate}' === "true", false);
 
 </script>
 

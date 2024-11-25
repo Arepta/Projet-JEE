@@ -29,18 +29,18 @@ import com.example.edu.tool.template.TableSingle;
 
 @Controller
 @RequestMapping("/admin/courses")
-public class CoursesController {
+public class AdminCoursesController {
 
     private final CoursesService coursesService;
     private final FieldService fieldService;
     private final ClassLevelService clService;
 
-    private final String absoluteURL = "admin/courses/field";
+    private final String absoluteURL = "admin/courses/courses";
     private TableSingle tableTemplate;
 
 
     @Autowired
-    public CoursesController(CoursesService coursesService, FieldService fieldService, ClassLevelService clService) {
+    public AdminCoursesController(CoursesService coursesService, FieldService fieldService, ClassLevelService clService) {
         this.coursesService = coursesService;
         this.fieldService = fieldService;
         this.clService = clService;
@@ -141,7 +141,7 @@ public class CoursesController {
         //Create validator to validate request content
         Validator requestContentValidator = new Validator(Map.of(
             "name", "default=NULL|max=100",
-            "program", "required|int|min=0",
+            "field", "default=0|int",
             "level", "default=0|int"
             )
         );

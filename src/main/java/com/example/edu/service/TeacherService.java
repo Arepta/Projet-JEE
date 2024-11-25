@@ -1,6 +1,8 @@
 package com.example.edu.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,16 @@ public class TeacherService {
 
     public Optional<Teacher> getTeachersById(Long id) {
         return this.TeacherRepository.findById(id);  //build in
+    }
+
+    public Map<Long, String> getAllIdxName() {
+
+        List<Teacher> b = this.TeacherRepository.findAll();
+        Map<Long, String> r = new HashMap<>();
+        for(Teacher cl : b){
+            r.put(cl.getId(), cl.getSurname() + " " + cl.getName());
+        }
+        return r; //build in
     }
 
     public Optional<Teacher> getTeachersByEmail(String email) {

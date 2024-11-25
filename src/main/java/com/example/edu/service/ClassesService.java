@@ -57,6 +57,17 @@ public class ClassesService {
         return r; //build in
     }
 
+    public Map<Long, List<Long>> getAllRoom() {
+
+        List<Classes> b = this.classesRepository.findAll();
+
+        Map<Long, List<Long>> r = new HashMap<>();
+        for(Classes cl : b){
+            r.put(cl.getId(), this.classesRepository.findRoomForId(cl.getId()));
+        }
+        return r; //build in
+    }
+
     public Optional<Classes> getById(Long id) {
         return this.classesRepository.findById(id);  //build in
     }

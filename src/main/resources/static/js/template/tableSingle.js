@@ -135,7 +135,12 @@ function table_setPage(number){
             line += "</tr>";
         }
         else{
-            line = `<tr onclick='table_setForm(${window._table_onDisplay[i]["id"]})'>`;
+            if(isNaN(window._table_onDisplay[i]["id"])){
+                line = `<tr onclick='table_setForm("${window._table_onDisplay[i]["id"]}")'>`;
+            }
+            else{
+                line = `<tr onclick='table_setForm(${window._table_onDisplay[i]["id"]})'>`;
+            }
             for(let attr=0; attr<window._table_head.length; attr++){
 
                 if(window._table_head[attr] in window._table_NGValuesToLabel && window._table_onDisplay[i][window._table_head[attr]] != null){

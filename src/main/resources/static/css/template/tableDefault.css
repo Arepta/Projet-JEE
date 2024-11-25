@@ -68,6 +68,21 @@ body {
     background-color: rgba(0, 122, 255, 0.1);
 }
 
+/* Filters Section */
+.table-content-filters {
+    display: flex;
+    gap: 1rem;
+}
+
+.table-data-filter {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #d0d0d0;
+    background-color: #ffffff;
+    color: #555555;
+}
+
 /* Table Styling */
 table {
     width: 100%;
@@ -132,6 +147,7 @@ table {
     padding: 1.5rem;
     background-color: #f9f9fa;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    height: fit-content;
 }
 
 .table-viewer-error p {

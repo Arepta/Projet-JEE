@@ -110,8 +110,8 @@ public class AdminTeacherController {
                 Long.parseLong(request.getFirst("id")),
                 request.getFirst("email"), 
                 "", 
-                request.getFirst("surname"), 
                 request.getFirst("name"), 
+                request.getFirst("surname"), 
                 cl
             );
 
@@ -171,8 +171,8 @@ public class AdminTeacherController {
                 null,
                 request.getFirst("email"), 
                 "", 
-                request.getFirst("surname"), 
                 request.getFirst("name"), 
+                request.getFirst("surname"), 
                 cl
             );
 
