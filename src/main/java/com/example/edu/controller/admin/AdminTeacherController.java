@@ -47,7 +47,7 @@ public class AdminTeacherController {
             "name","Prénom",
             "field","matière"
         );
-        List<String> columnDisplayed = Arrays.asList("id", "email", "surname", "name", "confirm");
+        List<String> columnDisplayed = Arrays.asList("id", "email", "surname", "name", "field");
 
         this.tableTemplate = new TableSingle("Professeur", columnToLabel, columnDisplayed);
 

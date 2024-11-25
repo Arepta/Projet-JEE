@@ -7,14 +7,10 @@
         <title>Etudiant - Bievenue</title>
     </head>
     <body>
-        <div class="dashboard">
-        <p><strong>Bonjour ${studentName} ${studentSurname},</strong></p>
-        <p>Vous etes inscrit dans la classe : <strong>${studentClass.title} ${studentClass.id}</strong>.</p>
-        <p>Promo : <strong>${studentLevel}</strong>.</p>
-        <p>Statut de confirmation : <strong>${confirmation}</strong>.</p>
+        <div>
+            PAGE ELEVE
         </div>
-        <h2>Emploi du temps</h2>
-        <c:import url="schedule.jsp" />
+        <jsp:include page="../template/schedule.jsp" flush="true"/>  
     </body>
     
     

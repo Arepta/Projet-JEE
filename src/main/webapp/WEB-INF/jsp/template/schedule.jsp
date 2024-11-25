@@ -19,7 +19,7 @@
                             <option value="0" selected>Par classes</option>
                             <option value="1">Par professeur</option>
                         </select>
-                        <select class="schedule-data-filter" id="schedule-data-filter-class" filter="classes" onchange="schedule_filter(this)">
+                        <select class="schedule-data-filter" id="schedule-data-filter-class" filter="class" onchange="schedule_filter(this)">
                             <c:forEach var="map" items="${_schedule_NGValues['class']}">
                                 <option value="${map.key}" >${map.value}</option>
                             </c:forEach>
@@ -34,7 +34,7 @@
                 
                 <div class="schedule-content-actions">
                     <a href="">Actualiser</a>
-                    <c:if test="${_schedule_Admin}"> <button onclick="">Nouveau</button> </c:if> 
+                    <c:if test="${_schedule_Admin}"> <button onclick="schedule_setFormMode(true);">Nouveau</button> </c:if> 
                 </div>
             </div>
 
@@ -82,8 +82,8 @@
             </div>
         </div>
 
+        <c:if test="${_schedule_Admin}"> 
         <div class="schedule-viewer" id="schedule-viewer">
-            <c:if test="${_schedule_Admin}"> 
                 <div class="schedule-content-title">
                     <h2 id="schedule-viewer-content-title">Modifier</h2>
                 </div>
@@ -101,7 +101,7 @@
                     <input class="schedule-form-input" name="id" type="number" value="${_schedule_OldField['id']}" hidden readonly>
 
                     <label for="class">Classe : </label>
-                    <select class="schedule-form-input <c:if test="${_schedule_ErrorField['class'] != null}">${'error'}</c:if>" name="class">
+                    <select onchange="schedule_onChangeSelectValue(this)" class="schedule-form-input <c:if test="${_schedule_ErrorField['class'] != null}">${'error'}</c:if>" name="class">
                         <option value=""  <c:if test="${_schedule_OldField['class'] == null || _schedule_OldField['class'].equals('')}">${'selected'}</c:if>></option>
                         <c:forEach var="map" items="${_schedule_NGValues['class']}">
                             <option value="${map.key}"  <c:if test="${_schedule_OldField['class'] == map.key}">${'selected'}</c:if>>${map.value}</option>
@@ -109,7 +109,7 @@
                     </select>
 
                     <label for="class">Cours : </label>
-                    <select class="schedule-form-input <c:if test="${_schedule_ErrorField['course'] != null}">${'error'}</c:if>" name="course">
+                    <select onchange="schedule_onChangeSelectValue(this)" class="schedule-form-input <c:if test="${_schedule_ErrorField['course'] != null}">${'error'}</c:if>" name="course">
                         <option value=""  <c:if test="${_schedule_OldField['course'] == null || _schedule_OldField['course'].equals('')}">${'selected'}</c:if>></option>
                         <c:forEach var="map" items="${_schedule_NGValues['course']}">
                             <option value="${map.key}"  <c:if test="${_schedule_OldField['course'] == map.key}">${'selected'}</c:if>>${map.value}</option>
@@ -136,7 +136,7 @@
                     <input class="schedule-form-input <c:if test="${_schedule_ErrorField['start'] != null}">${'error'}</c:if>" name="start" type="datetime-local" value="${_schedule_OldField['start']}">
 
                     <label for="class">Fin : </label>
-                    <input class="schedule-form-input<c:if test="${_schedule_ErrorField['end'] != null}">${'error'}</c:if>" name="end" type="datetime-local" value="${_schedule_OldField['end']}">
+                    <input class="schedule-form-input <c:if test="${_schedule_ErrorField['end'] != null}">${'error'}</c:if>" name="end" type="datetime-local" value="${_schedule_OldField['end']}">
                     
                     <div class="schedule-form-actions" id="schedule-edit-form-actions">
                         <button type="submit">MAJ</button>
@@ -148,8 +148,9 @@
                     </div>
 
                 </form>
-            </c:if> 
+            
         </div>
+        </c:if> 
     </div>
 </div>
 
@@ -157,7 +158,7 @@
 <script>    
     schedule_init('${_schedule_Data}', '${_schedule_Links}', '${_schedule_LinksData}', '${_schedule_NGValuesJSON}');
    
-    // schedule_setFormMode('${ _tableSingle_SetCreate}' === "true", false);
+    schedule_setFormMode(${_schedule_setEdit == null}, false);
     schedule_setUpFilter();
 
 </script>

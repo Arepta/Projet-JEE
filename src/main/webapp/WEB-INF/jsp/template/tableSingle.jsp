@@ -132,7 +132,7 @@
 <script>    
     table_init('${_tableSingle_Data}', '${_tableSingle_Links}', '${_tableSingle_LinksData}', '${_tableSingle_NGValuesJSON}');
     table_setPage(0);
-    table_setFormMode('${ _tableSingle_SetCreate}' === "true", false);
+    table_setFormMode(${ _tableSingle_setEdit == null}, false);
 
 </script>
 

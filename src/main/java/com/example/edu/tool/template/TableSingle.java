@@ -54,7 +54,6 @@ public class TableSingle extends Template{
         model.addAttribute("_tableSingle_Links", this.gson.toJson(this.links)); 
         model.addAttribute("_tableSingle_LinksData", this.gson.toJson(buffer_linksData)); 
         model.addAttribute("_tableSingle_Type", this.typeJavaToHTML); 
-        model.addAttribute("_tableSingle_SetCreate", true); 
 
     }
 
@@ -63,7 +62,7 @@ public class TableSingle extends Template{
         model.addAttribute("_tableSingle_ErrorField", requestValiadtor.getErrors()); 
         model.addAttribute("_tableSingle_ErrorMessages", this.replaceColumnInString(requestValiadtor.getErrorsMessages())); 
         model.addAttribute("_tableSingle_OldField", requestValiadtor.getValidatedValue());
-        model.addAttribute("_tableSingle_SetCreate", isCreate); 
+        if(!isCreate) model.addAttribute("_tableSingle_setEdit", false); 
     }
 
     public void addLock(String For){

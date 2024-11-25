@@ -17,30 +17,36 @@ public class StudentService {
 
     private PasswordEncoder passwordEncoder;
 
+    private final EmailService emailService;
+
 
     @Autowired // IMPORTANT
-    public StudentService(StudentRepository studentRepository, PasswordEncoder passwordEncoder) {
+    public StudentService(StudentRepository studentRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.studentRepository = studentRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     
     }
 
     public List<Student> getAll() {
-        return this.studentRepository.findAll(); //build in
+        return this.studentRepository.findAll(); 
     }
 
     public Optional<Student> getById(Long id) {
-        return this.studentRepository.findById(id);  //build in
+        return this.studentRepository.findById(id);
     }
 
     public Optional<Student> getByEmail(String email) {
-        return this.studentRepository.findByEmail(email);  //build in
+        return this.studentRepository.findByEmail(email);
     }
 
     public Student create(Student StudentDetails) {
+
+        emailService.sendEmail("inscription@school.com", StudentDetails.getEmail(), "Compte", "Un compte a été créé à votre nom. utilisé cette adresse mail et votre date de naissance en mot de passe pour vous connecter.");
+
         StudentDetails.setPassword(passwordEncoder.encode(StudentDetails.getPassword()));
         
-        return this.studentRepository.save(StudentDetails);  //build in
+        return this.studentRepository.save(StudentDetails);
     }
 
     public Student update(Student StudentDetails) {
@@ -55,6 +61,15 @@ public class StudentService {
             updatedStudent.setDateOfBirth(StudentDetails.getDateOfBirth());
             updatedStudent.setLevel(StudentDetails.getLevel());
             updatedStudent.setStudentClass(StudentDetails.getStudentClass());
+
+            if(updatedStudent.getConfirm() && !StudentDetails.getConfirm()){
+                emailService.sendEmail("inscription@school.com", updatedStudent.getEmail(), "Compte", "Votre compte a été desactivé.");
+            }
+            
+            if(!updatedStudent.getConfirm() && StudentDetails.getConfirm()){
+                emailService.sendEmail("inscription@school.com", updatedStudent.getEmail(), "Compte", "Votre compte a été activé.");
+            }
+
             updatedStudent.setConfirm(StudentDetails.getConfirm());
 
             return this.studentRepository.save(updatedStudent);

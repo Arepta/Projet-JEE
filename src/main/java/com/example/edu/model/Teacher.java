@@ -106,6 +106,9 @@ public class Teacher {
                 else if(field.get(this) instanceof Classes){
                     JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Classes)field.get(this)).getId() + ",");
                 }
+                else if(field.get(this) instanceof FieldTeacher){
+                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((FieldTeacher)field.get(this)).getId() + ",");
+                }
                 else if(field.get(this) == null || (!(field.get(this) instanceof String) && !(field.get(this) instanceof LocalDate)) ){
                     JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + field.get(this) + ",");
                 }

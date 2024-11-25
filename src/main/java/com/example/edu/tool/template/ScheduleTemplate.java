@@ -17,7 +17,14 @@ public class ScheduleTemplate extends Template{
     private Map<String, Supplier< Map<Long,List<Long>> >> linksData;
 
     public ScheduleTemplate(String title, boolean isViewAdmin){
-        super(title, null, null);
+        super(title, Map.of(
+            "class", "Classe",
+            "course", "Cours",
+            "teacher", "Professeur",
+            "room", "Salle",
+            "start", "Debut",
+            "end", "Fin"
+        ), null);
         this.isViewAdmin = isViewAdmin;
         this.nonGeneriqueValues = new HashMap<>();
         this.links = new HashMap<>();
@@ -45,7 +52,6 @@ public class ScheduleTemplate extends Template{
         model.addAttribute("_schedule_NGValuesJSON", this.gson.toJson(buffer_nonGeneriqueValues)); 
         model.addAttribute("_schedule_Links", this.gson.toJson(this.links)); 
         model.addAttribute("_schedule_LinksData", this.gson.toJson(buffer_linksData)); 
-        model.addAttribute("_schedule_SetCreate", true); 
     }
 
     public void initModel(Model model, List<Schedule> data, boolean isCreate, Validator requestValiadtor){
@@ -53,7 +59,7 @@ public class ScheduleTemplate extends Template{
         model.addAttribute("_schedule_ErrorField", requestValiadtor.getErrors()); 
         model.addAttribute("_schedule_ErrorMessages", this.replaceColumnInString(requestValiadtor.getErrorsMessages())); 
         model.addAttribute("_schedule_OldField", requestValiadtor.getValidatedValue());
-        model.addAttribute("_schedule_SetCreate", isCreate); 
+        if(!isCreate) model.addAttribute("_schedule_setEdit", false);
     }
 
     public void setValuesFor(String column, Supplier<Map<?, String>>  MethodForvalueToLabel){

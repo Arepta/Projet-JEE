@@ -116,7 +116,7 @@ public class Schedule {
                     JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Room)field.get(this)).getId() + ",");
                 }
                 else if(field.get(this) instanceof Classes){
-                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Classes)field.get(this)).getId() + ",");
+                    JSON = JSON.concat("\"class\":" + ((Classes)field.get(this)).getId() + ",");
                 }
                 else if(field.get(this) instanceof Teacher){
                     JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Teacher)field.get(this)).getId() + ",");
