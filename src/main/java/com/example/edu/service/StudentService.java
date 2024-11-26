@@ -32,7 +32,7 @@ public class StudentService {
         return this.studentRepository.findAll(); 
     }
 
-    public Optional<Student> getById(Long id) {
+    public Optional<Student> getStudentById(Long id) {
         return this.studentRepository.findById(id);
     }
 

@@ -101,17 +101,11 @@ CREATE TABLE evaluations(
     id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     course BIGINT UNSIGNED NOT NULL,
-    min_score INT DEFAULT 0,
-    max_score INT DEFAULT 20,
-    
-    FOREIGN KEY fk_evaluations_course(course) REFERENCES courses(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE results(
-    evaluation BIGINT UNSIGNED NOT NULL,
     student BIGINT UNSIGNED NOT NULL,
-    score INT DEFAULT 10,
-
-    FOREIGN KEY fk_results_evaluation(evaluation) REFERENCES evaluations(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    min_score INT DEFAULT 0 NOT NULL,
+    max_score INT DEFAULT 20 NOT NULL,
+    score INT DEFAULT 10 NOT NULL,
+    
+    FOREIGN KEY fk_evaluations_course(course) REFERENCES courses(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY fk_results_student(student) REFERENCES students(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
