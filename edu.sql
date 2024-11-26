@@ -45,8 +45,8 @@ CREATE TABLE class(
     level BIGINT UNSIGNED NULL,
     size INT NOT NULL DEFAULT 30,
 
-    FOREIGN KEY fk_class_program(program) REFERENCES programs(id) ON DELETE CASCADE ON UPDATE CASCADE
-    FOREIGN KEY fk_class_level(level) REFERENCES class_level(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY fk_class_program(program) REFERENCES programs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY fk_class_level(level) REFERENCES class_level(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE teachers(

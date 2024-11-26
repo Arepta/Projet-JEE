@@ -19,7 +19,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     @Autowired // IMPORTANT
-    public ScheduleService(ScheduleRepository scheduleRepository, EmailService emailService) {
+    public ScheduleService(ScheduleRepository scheduleRepository/* , EmailService emailService*/) {
         this.scheduleRepository = scheduleRepository;
     }
 
