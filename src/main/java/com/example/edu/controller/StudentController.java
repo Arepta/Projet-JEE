@@ -38,7 +38,7 @@ public class StudentController {
         this.clService = clService;
         this.roomService = roomService;
 
-        this.scheduleTemplate = new ScheduleTemplate("Emploie du temps", false);
+        this.scheduleTemplate = new ScheduleTemplate("Emploi du temps", false);
         this.scheduleTemplate.setValuesFor("course", this.coursesService::getAllIdxName);
         this.scheduleTemplate.setValuesFor("teacher", this.teacherService::getAllIdxName);
         this.scheduleTemplate.setValuesFor("class", this.clService::getAllIdxName);

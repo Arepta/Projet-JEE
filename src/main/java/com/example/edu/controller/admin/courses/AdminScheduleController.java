@@ -55,7 +55,7 @@ public class AdminScheduleController {
         this.roomService = roomService;
         this.scheduleService = scheduleService;
 
-        this.scheduleTemplate = new ScheduleTemplate("Emploie du temps", true);
+        this.scheduleTemplate = new ScheduleTemplate("Emploi du temps", true);
 
         this.scheduleTemplate.setValuesFor("course", this.coursesService::getAllIdxName);
         this.scheduleTemplate.setValuesFor("teacher", this.teacherService::getAllIdxName);

@@ -21,8 +21,7 @@
         </li>
         <li>
             <ul>
-                <li><a href="${request.getContextPath()}/admin/results/courses">Evaluations</a></li>
-                <li><a href="${request.getContextPath()}/admin/results/results">Gestion des resultats</a></li>
+                <li><a href="${request.getContextPath()}/admin/evaluation">Evaluations</a></li>
             </ul>
         </li>
     </ul>

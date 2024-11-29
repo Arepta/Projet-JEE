@@ -3,8 +3,6 @@ package com.example.edu.model;
 import jakarta.persistence.*;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-
 
 @Entity
 @Table(name = "evaluations")
@@ -14,42 +12,47 @@ public class Evaluations {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(nullable = false, length = 100, unique = true)
-    private int MinScore;
+    @Column(name = "min_score", nullable = false, columnDefinition = "INT DEFAULT 0")
+    private int minScore;
 
-    @Column(nullable = false, length = 100, unique = true)
-    private int MaxScore;
+    @Column(name = "max_score", nullable = false, columnDefinition = "INT DEFAULT 20")
+    private int maxScore;
 
-    @Column(nullable = false, length = 100, unique = true)
-    private int Score;
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 10")
+    private int score;
 
     @ManyToOne
-    @JoinColumn(name = "course", nullable = false,  referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_schedule_course"))
+    @JoinColumn(
+        name = "course",
+        nullable = false,
+        foreignKey = @ForeignKey(name = "fk_evaluations_course")
+    )
     private Courses course;
 
     @ManyToOne
-    @JoinColumn(name = "student", nullable = false,  referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_schedule_course"))
+    @JoinColumn(
+        name = "student",
+        nullable = false,
+        foreignKey = @ForeignKey(name = "fk_evaluations_student")
+    )
     private Student student;
 
-    // Constructeur sans argument requis par JPA
     public Evaluations() {
     }
 
-    // Constructeur avec arguments pour la création facile d'instances
-    public Evaluations(Long id, String name, int MaxScore, int MinScore, int Score, Courses course, Student student) {
-        this.id = id;
+    public Evaluations(String name, int minScore, int maxScore, int score, Courses course, Student student) {
         this.name = name;
-        this.MaxScore = MaxScore;
-        this.MinScore = MinScore;
-        this.Score = Score;
+        this.minScore = minScore;
+        this.maxScore = maxScore;
+        this.score = score;
         this.course = course;
         this.student = student;
     }
 
-    // Getters et Setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -66,28 +69,28 @@ public class Evaluations {
         this.name = name;
     }
 
-    public int getMaxScore() {
-        return MaxScore;
-    }
-
-    public void setMaxScore(int MaxScore) {
-        this.MaxScore = MaxScore;
-    }
-
     public int getMinScore() {
-        return MinScore;
+        return minScore;
     }
 
-    public void setMinScore(int MinScore) {
-        this.MinScore = MinScore;
+    public void setMinScore(int minScore) {
+        this.minScore = minScore;
+    }
+
+    public int getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(int maxScore) {
+        this.maxScore = maxScore;
     }
 
     public int getScore() {
-        return Score;
+        return score;
     }
 
-    public void setScore(int Score) {
-        this.Score = Score;
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public Courses getCourse() {
@@ -106,40 +109,21 @@ public class Evaluations {
         this.student = student;
     }
 
-
     @Override
-    public String toString(){
-        String JSON = "";
-        Class<?> clazz = this.getClass();
-        for (Field field : clazz.getDeclaredFields()) {
-            try{
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{");
+        for (Field field : this.getClass().getDeclaredFields()) {
+            try {
                 field.setAccessible(true);
-                if(field.get(this) instanceof Room){
-                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Room)field.get(this)).getId() + ",");
-                }
-                else if(field.get(this) instanceof Classes){
-                    JSON = JSON.concat("\"class\":" + ((Classes)field.get(this)).getId() + ",");
-                }
-                else if(field.get(this) instanceof Teacher){
-                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Teacher)field.get(this)).getId() + ",");
-                }
-                else if(field.get(this) instanceof Courses){
-                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + ((Courses)field.get(this)).getId() + ",");
-                }
-                else if(field.get(this) == null || (!(field.get(this) instanceof String) && !(field.get(this) instanceof LocalDateTime)) ){
-                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\":" + field.get(this) + ",");
-                }
-                else{
-                    JSON = JSON.concat("\"" + field.getName().toLowerCase() + "\": \"" + field.get(this) + "\",");
-                }
-                
-            } 
-            catch (IllegalAccessException e) {
+                sb.append("\"")
+                    .append(field.getName())
+                    .append("\": ")
+                    .append(field.get(this) instanceof String ? "\"" + field.get(this) + "\"" : field.get(this))
+                    .append(", ");
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-
-        return "{"+JSON.substring(0, JSON.length()-1)+"}";
+        return sb.substring(0, sb.length() - 2) + "}";
     }
-
 }

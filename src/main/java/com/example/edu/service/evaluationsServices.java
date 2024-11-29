@@ -9,69 +9,102 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.edu.model.Evaluations;
-import com.example.edu.repository.evaluationsRepository;
+import com.example.edu.repository.EvaluationsRepository;
 
 @Service
-public class evaluationsServices {
-    private final evaluationsRepository evaluationsRepository;
+public class EvaluationsServices {
 
-    @Autowired // IMPORTANT
-    public evaluationsServices(evaluationsRepository evaluationsRepository) {
+    private final EvaluationsRepository evaluationsRepository;
+
+    @Autowired // Annotation pour l'injection automatique
+    public EvaluationsServices(EvaluationsRepository evaluationsRepository) {
         this.evaluationsRepository = evaluationsRepository;
-    
     }
 
+    /**
+     * Récupérer toutes les évaluations
+     *
+     * @return Liste des évaluations
+     */
     public List<Evaluations> getAll() {
-        return this.evaluationsRepository.findAll(); //build in
+        return this.evaluationsRepository.findAll();
     }
 
+    /**
+     * Récupérer un mapping d'ID d'évaluation avec leurs noms
+     *
+     * @return Map contenant les ID comme clé et les noms comme valeur
+     */
     public Map<Long, String> getAllIdxName() {
-
-        List<Evaluations> b = this.evaluationsRepository.findAll();
-        Map<Long, String> r = new HashMap<>();
-        for(Evaluations cl : b){
-            r.put(cl.getId(), cl.getName());
+        List<Evaluations> evaluations = this.evaluationsRepository.findAll();
+        Map<Long, String> result = new HashMap<>();
+        for (Evaluations eval : evaluations) {
+            result.put(eval.getId(), eval.getName());
         }
-        return r; //build in
+        return result;
     }
 
-    public Map<Long, List<Long>> getAllEvaluations() {
-
-        List<Evaluations> b = this.evaluationsRepository.findAll();
-        Map<Long, List<Long>> r = new HashMap<>();
-        for(Evaluations cl : b){
-            r.put(cl.getId(), this.evaluationsRepository.getSudentById(cl.getId()));
-        }
-        return r; //build in
+    /**
+     * Récupérer toutes les évaluations pour un étudiant spécifique
+     *
+     * @param studentId ID de l'étudiant
+     * @return Map contenant les évaluations de l'étudiant
+     */
+    public Map<Long, List<Evaluations>> getAllEvaluationsByStudent(Long studentId) {
+        List<Evaluations> evaluations = this.evaluationsRepository.findEvaluationsByStudentId(studentId);
+        Map<Long, List<Evaluations>> result = new HashMap<>();
+        result.put(studentId, evaluations);
+        return result;
     }
 
+    /**
+     * Récupérer une évaluation par son ID
+     *
+     * @param id ID de l'évaluation
+     * @return Évaluation correspondante (Optional)
+     */
     public Optional<Evaluations> getById(Long id) {
-        return this.evaluationsRepository.findById(id);  //build in
+        return this.evaluationsRepository.findById(id);
     }
 
+    /**
+     * Créer une nouvelle évaluation
+     *
+     * @param details Détails de l'évaluation
+     * @return Évaluation créée
+     */
     public Evaluations create(Evaluations details) {
-        return this.evaluationsRepository.save(details);  //build in
+        return this.evaluationsRepository.save(details);
     }
 
+    /**
+     * Mettre à jour une évaluation existante
+     *
+     * @param details Détails mis à jour de l'évaluation
+     * @return Évaluation mise à jour ou null si non trouvée
+     */
     public Evaluations update(Evaluations details) {
         Optional<Evaluations> optionalEvaluation = this.evaluationsRepository.findById(details.getId());
 
         if (optionalEvaluation.isPresent()) {
-            Evaluations updatedCourses = optionalEvaluation.get();
-
-            updatedCourses.setName(details.getName());
-            updatedCourses.setMaxScore(details.getMaxScore());
-            updatedCourses.setMinScore(details.getMinScore());
-            updatedCourses.setScore(details.getScore());
-            updatedCourses.setCourse(details.getCourse());
-            updatedCourses.setStudent(details.getStudent());
-
-            return this.evaluationsRepository.save(updatedCourses);
+            Evaluations updatedEvaluation = optionalEvaluation.get();
+            updatedEvaluation.setName(details.getName());
+            updatedEvaluation.setMaxScore(details.getMaxScore());
+            updatedEvaluation.setMinScore(details.getMinScore());
+            updatedEvaluation.setScore(details.getScore());
+            updatedEvaluation.setCourse(details.getCourse());
+            updatedEvaluation.setStudent(details.getStudent());
+            return this.evaluationsRepository.save(updatedEvaluation);
         }
 
         return null;
     }
 
+    /**
+     * Supprimer une évaluation par ID
+     *
+     * @param id ID de l'évaluation à supprimer
+     */
     public void delete(Long id) {
         this.evaluationsRepository.deleteById(id);
     }
