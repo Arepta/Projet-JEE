@@ -70,8 +70,15 @@ public class StudentEvaluationController {
         // Récupérer toutes les évaluations
 
         Student student = studentService.getByEmail(authentication.getName()).orElse(null);
+        if (student == null) {
+            String msg = "No student found for email: {}"+ authentication.getName();
+            System.out.println(msg);
+        } else {
+            String msg ="Student found: id={}, email={}"+ student.getId()+ student.getEmail();
+            System.out.println(msg);
+        }
         Map<Long, List<Evaluations>> evaluationsMap = evalService.getAllEvaluationsByStudent(student.getId());
-        List<Evaluations> evaluations = evaluationsMap.getOrDefault(classeId, new ArrayList<>());
+        List<Evaluations> evaluations = evaluationsMap.getOrDefault(student.getId(), new ArrayList<>());
 
         // Initialiser les relations nécessaires
         evaluations.forEach(eval -> {
