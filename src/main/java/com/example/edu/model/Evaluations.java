@@ -30,7 +30,7 @@ public class Evaluations {
     public Evaluations() {
     }
 
-    public Evaluations(Long id, String name, int minScore, int maxScore, int score, Courses course, Student student) {
+    public Evaluations(Long id, String name, int score, Student student) {
         this.id = id;
         this.name = name;
         this.score = score;

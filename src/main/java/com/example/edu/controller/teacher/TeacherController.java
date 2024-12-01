@@ -1,4 +1,6 @@
-package com.example.edu.controller;
+package com.example.edu.controller.teacher;
+
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -10,7 +12,6 @@ import com.example.edu.model.Teacher;
 import com.example.edu.service.ClassesService;
 import com.example.edu.service.CoursesService;
 import com.example.edu.service.RoomService;
-import com.example.edu.service.ScheduleService;
 import com.example.edu.service.TeacherService;
 import com.example.edu.tool.template.ScheduleTemplate;
 
@@ -21,12 +22,10 @@ public class TeacherController {
     private final TeacherService teacherService;
     private final ClassesService clService;
     private final RoomService roomService;
-    private final ScheduleService scheduleService;
     private ScheduleTemplate scheduleTemplate;
 
     @Autowired
-    public TeacherController(ScheduleService scheduleService, CoursesService coursesService, TeacherService teacherService, ClassesService clService, RoomService roomService) {
-        this.scheduleService = scheduleService;
+    public TeacherController(CoursesService coursesService, TeacherService teacherService, ClassesService clService, RoomService roomService) {
         this.coursesService = coursesService;
         this.teacherService = teacherService;
         this.clService = clService;
@@ -47,7 +46,7 @@ public class TeacherController {
         System.out.println(authentication.getName());
         System.out.println(teacher);
 
-        
+        scheduleTemplate.initModel(model, new ArrayList<>());
         return "teacher/dashboard";
     }
     

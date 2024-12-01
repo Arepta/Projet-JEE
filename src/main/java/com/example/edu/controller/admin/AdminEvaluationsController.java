@@ -160,9 +160,7 @@ public class AdminEvaluationsController {
         //Create validator to validate request content
         Validator requestContentValidator = new Validator(Map.of(
             "name", "max=100",
-            "score", "required|int|min=0|max=20",
-            "minscore", "required|int|min=0|max=20",
-            "maxscore", "required|int|min=0|max=20"
+            "score", "required|int|min=0|max=20"
             )
         );
 
@@ -177,10 +175,7 @@ public class AdminEvaluationsController {
             Evaluations details = new Evaluations(
                 null,
                 request.getFirst("name"), 
-                Integer.parseInt(request.getFirst("minscore")) , 
-                Integer.parseInt(request.getFirst("maxscore")), 
                 Integer.parseInt(request.getFirst("score")),
-                dl,
                 cl
             );
 
