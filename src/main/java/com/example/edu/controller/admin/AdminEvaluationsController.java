@@ -3,22 +3,29 @@ package com.example.edu.controller.admin;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.edu.model.Courses;
 import com.example.edu.model.Evaluations;
+import com.example.edu.model.Student;
+import com.example.edu.model.Teacher;
 import com.example.edu.service.ClassesService;
 import com.example.edu.service.CoursesService;
-import com.example.edu.service.EvaluationsServices;
+import com.example.edu.service.StudentService;
+import com.example.edu.service.evaluationsServices;
 import com.example.edu.tool.Validator.Validator;
 import com.example.edu.tool.Validator.Exceptions.unknownRuleException;
 import com.example.edu.tool.template.TableSingle;
@@ -27,35 +34,36 @@ import com.example.edu.tool.template.TableSingle;
 @RequestMapping("/admin")
 public class AdminEvaluationsController {
 
-    private final EvaluationsServices evalService;
+    private final evaluationsServices evalService;
     private final ClassesService classesService;
     private final CoursesService coursesService;
+    private final StudentService studentService;
 
-    private final String absoluteURL = "admin/evaluation";
     private TableSingle tableTemplate;
 
     @Autowired
-    public AdminEvaluationsController(EvaluationsServices evalService, ClassesService classesService, CoursesService coursesService) {
+    public AdminEvaluationsController(evaluationsServices evalService, ClassesService classesService, CoursesService coursesService, StudentService studentService) {
         this.evalService = evalService;
         this.classesService = classesService;
         this.coursesService = coursesService;
+        this.studentService = studentService;
 
         // Configuration des colonnes pour le tableau
         Map<String, String> columnToLabel = Map.of(
             "id", "ID",
             "name", "Nom de l'évaluation",
-            "student.name", "Nom",
-            "student.surname", "Prénom",
+            "student", "Eleve",
             "score", "Note"
         );
-        List<String> columnDisplayed = Arrays.asList("id", "name", "student.name", "student.surname", "score");
+        List<String> columnDisplayed = Arrays.asList("id", "name", "student", "score");
 
         this.tableTemplate = new TableSingle("Évaluations", columnToLabel, columnDisplayed);
-
+        this.tableTemplate.addLock("course");
+        this.tableTemplate.setValuesFor("student", this.studentService::getAllIdxNameSurname);
         // Ajouter les filtres pour "Classe", "Matière", et "Nom de l'évaluation"
-        this.tableTemplate.addFilter("Classe");
-        this.tableTemplate.addFilter("Matière");
-        this.tableTemplate.addFilter("Nom de l'évaluation");
+        this.tableTemplate.addFilter("student");
+
+
     }
 
     /**
@@ -71,7 +79,6 @@ public class AdminEvaluationsController {
 
         // Initialiser les relations nécessaires
         evaluations.forEach(eval -> {
-            Hibernate.initialize(eval.getCourse()); // Initialisation explicite de la relation Course
             Hibernate.initialize(eval.getStudent()); // Initialisation explicite de la relation Student
             Hibernate.initialize(eval.getStudent().getStudentClass()); // Initialisation explicite de la relation StudentClass
         });
@@ -81,12 +88,6 @@ public class AdminEvaluationsController {
             evaluations = evaluations.stream()
                 .filter(eval -> eval.getStudent().getStudentClass() != null &&
                                 eval.getStudent().getStudentClass().getId().equals(classeId))
-                .toList();
-        }
-
-        if (matiereId != null) {
-            evaluations = evaluations.stream()
-                .filter(eval -> eval.getCourse() != null && eval.getCourse().getId().equals(matiereId))
                 .toList();
         }
 
@@ -145,6 +146,98 @@ public class AdminEvaluationsController {
         }
 
         tableTemplate.prepareRedirect(model, redirectAttributes);
-        return "redirect:/" + absoluteURL;
+        return "redirect:/admin/evaluation";
+    }
+
+    /*
+     * POST - http://localhost:8080/admin/evalutaion
+     * Page to manage evaluation datas.
+     * 
+     */
+    @PostMapping("/evaluation")
+    public String createEvaluations(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
+
+        //Create validator to validate request content
+        Validator requestContentValidator = new Validator(Map.of(
+            "name", "max=100",
+            "score", "required|int|min=0|max=20",
+            "minscore", "required|int|min=0|max=20",
+            "maxscore", "required|int|min=0|max=20"
+            )
+        );
+
+        if( requestContentValidator.validateRequest(request) ){ //validate the request
+
+            Optional<Student> ocl = studentService.getById(Long.parseLong(request.getFirst("student")));
+            Student cl = ocl.isPresent() ? ocl.get() : null;
+
+            Optional<Courses> ucl = coursesService.getById(Long.parseLong(request.getFirst("course")));
+            Courses dl = ucl.isPresent() ? ucl.get() : null;
+
+            Evaluations details = new Evaluations(
+                null,
+                request.getFirst("name"), 
+                Integer.parseInt(request.getFirst("minscore")) , 
+                Integer.parseInt(request.getFirst("maxscore")), 
+                Integer.parseInt(request.getFirst("score")),
+                dl,
+                cl
+            );
+
+            if(evalService.createEvaluations(details) != null){
+                //processed
+                model.addAttribute("message", "L'éval a été ajouté.");
+                model.addAttribute("messageType", "success");
+            }
+            else{
+                //unexcepted error in process
+                model.addAttribute("message", "Une erreur est survenue :/");
+                model.addAttribute("messageType", "warning");
+            }
+        } 
+        else{
+            //failed validation
+            model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
+            model.addAttribute("messageType", "error");
+
+            tableTemplate.initModel(model, null, Teacher.class, true, requestContentValidator);
+        }
+
+        // Transfer all attributes from the Model to RedirectAttributes
+        for (String attributeName : model.asMap().keySet()) {
+            redirectAttributes.addFlashAttribute(attributeName, model.asMap().get(attributeName));
+        }
+
+        return "redirect:/admin/evaluation";  
+    }
+
+    @DeleteMapping("/evaluation")
+    public String deleteEvaluation(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
+
+        //Create validator to validate request content
+        Validator requestContentValidator = new Validator(Map.of(
+                "id", "required|int|min=0" //must be a number 0 min, MANDATORY
+            )
+        );
+
+        if( requestContentValidator.validateRequest(request) ){ //validate the request
+
+            evalService.delete(Long.parseLong(request.getFirst("id")));
+            model.addAttribute("message", "Le prof a été supprimé.");
+            model.addAttribute("messageType", "success");
+ 
+        } 
+        else{
+            //failed validation
+            model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
+            model.addAttribute("messageType", "error");
+        }
+
+        // Transfer all attributes from the Model to RedirectAttributes
+        for (String attributeName : model.asMap().keySet()) {
+            redirectAttributes.addFlashAttribute(attributeName, model.asMap().get(attributeName));
+        }
+
+        return "redirect:/admin/evaluation";  
     }
 }

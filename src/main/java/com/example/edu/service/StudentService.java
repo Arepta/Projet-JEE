@@ -1,6 +1,8 @@
 package com.example.edu.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +34,32 @@ public class StudentService {
         return this.studentRepository.findAll(); 
     }
 
-    public Optional<Student> getStudentById(Long id) {
+    public Optional<Student> getById(Long id) {
         return this.studentRepository.findById(id);
     }
 
     public Optional<Student> getByEmail(String email) {
         return this.studentRepository.findByEmail(email);
+    }
+
+    public Map<Long, String> getAllIdxName() {
+
+        List<Student> b = this.studentRepository.findAll();
+        Map<Long, String> r = new HashMap<>();
+        for(Student cl : b){
+            r.put(cl.getId(), cl.getName());
+        }
+        return r; //build in
+    }
+
+    public Map<Long, String> getAllIdxNameSurname() {
+
+        List<Student> b = this.studentRepository.findAll();
+        Map<Long, String> r = new HashMap<>();
+        for(Student cl : b){
+            r.put(cl.getId(), cl.getName()+" "+cl.getSurname());
+        }
+        return r; //build in
     }
 
     public Student create(Student StudentDetails) {

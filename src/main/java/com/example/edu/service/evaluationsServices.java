@@ -9,15 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.edu.model.Evaluations;
-import com.example.edu.repository.EvaluationsRepository;
+import com.example.edu.repository.evaluationsRepository;
 
 @Service
-public class EvaluationsServices {
+public class evaluationsServices {
 
-    private final EvaluationsRepository evaluationsRepository;
+    private final evaluationsRepository evaluationsRepository;
 
     @Autowired // Annotation pour l'injection automatique
-    public EvaluationsServices(EvaluationsRepository evaluationsRepository) {
+    public evaluationsServices(evaluationsRepository evaluationsRepository) {
         this.evaluationsRepository = evaluationsRepository;
     }
 
@@ -73,7 +73,7 @@ public class EvaluationsServices {
      * @param details Détails de l'évaluation
      * @return Évaluation créée
      */
-    public Evaluations create(Evaluations details) {
+    public Evaluations createEvaluations(Evaluations details) {
         return this.evaluationsRepository.save(details);
     }
 
@@ -89,10 +89,7 @@ public class EvaluationsServices {
         if (optionalEvaluation.isPresent()) {
             Evaluations updatedEvaluation = optionalEvaluation.get();
             updatedEvaluation.setName(details.getName());
-            updatedEvaluation.setMaxScore(details.getMaxScore());
-            updatedEvaluation.setMinScore(details.getMinScore());
             updatedEvaluation.setScore(details.getScore());
-            updatedEvaluation.setCourse(details.getCourse());
             updatedEvaluation.setStudent(details.getStudent());
             return this.evaluationsRepository.save(updatedEvaluation);
         }

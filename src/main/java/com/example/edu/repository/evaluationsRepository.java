@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.example.edu.model.Evaluations;
 
-public interface EvaluationsRepository extends JpaRepository<Evaluations, Long> {
+public interface evaluationsRepository extends JpaRepository<Evaluations, Long> {
     
     // Requête JPQL pour récupérer les évaluations par ID de l'étudiant
     @Query("SELECT e FROM Evaluations e WHERE e.student.id = :studentId")
