@@ -22,7 +22,7 @@ public class StudentController {
     
     private final StudentService studentService;
 
-     private final CoursesService coursesService;
+    private final CoursesService coursesService;
     private final TeacherService teacherService;
     private final ClassesService clService;
     private final RoomService roomService;

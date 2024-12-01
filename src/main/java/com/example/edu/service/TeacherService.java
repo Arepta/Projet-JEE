@@ -45,7 +45,7 @@ public class TeacherService {
         return r; //build in
     }
 
-    public Optional<Teacher> getTeachersByEmail(String email) {
+    public Optional<Teacher> getByEmail(String email) {
         return this.TeacherRepository.findByEmail(email);  //build in
     }
 
