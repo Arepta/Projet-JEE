@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.edu.model.Courses;
 import com.example.edu.model.Evaluations;
 import com.example.edu.model.Student;
 import com.example.edu.model.Teacher;
@@ -168,9 +167,6 @@ public class AdminEvaluationsController {
 
             Optional<Student> ocl = studentService.getById(Long.parseLong(request.getFirst("student")));
             Student cl = ocl.isPresent() ? ocl.get() : null;
-
-            Optional<Courses> ucl = coursesService.getById(Long.parseLong(request.getFirst("course")));
-            Courses dl = ucl.isPresent() ? ucl.get() : null;
 
             Evaluations details = new Evaluations(
                 null,
