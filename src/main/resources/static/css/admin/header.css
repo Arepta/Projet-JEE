@@ -1,0 +1,91 @@
+/* Général */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+header {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Navigation */
+.main-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 0;
+}
+
+.nav-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.nav-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #007aff;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+
+.nav-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+.nav-section ul li a {
+    text-decoration: none;
+    color: #007aff;
+    font-size: 1rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-section ul li a:hover {
+    background-color: #f0f8ff;
+    color: #0056d6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    header {
+        padding: 0 1rem;
+    }
+
+    .nav-section h2 {
+        font-size: 1.1rem;
+    }
+
+    .nav-section ul li a {
+        font-size: 0.9rem;
+    }
+}

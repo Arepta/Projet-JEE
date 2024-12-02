@@ -73,7 +73,6 @@ public class StudentEvaluationController {
         if (student == null) {
             String msg = "No student found for email: {}"+ authentication.getName();
             System.out.println(msg);
-            return "student/default"; // Vue JSP générique
         } else {
             String msg ="Student found: id={}, email={}"+ student.getId()+ student.getEmail();
             System.out.println(msg);

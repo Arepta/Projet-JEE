@@ -139,7 +139,7 @@ public class AdminStudentController {
 
             Optional<Student> buffer = studentService.getByEmail(details.getEmail());
 
-            if(details.getStudentClass() != null && details.getStudentClass().getLevel().getId() != details.getLevel().getId()){
+            if(details.getStudentClass() != null && details.getStudentClass().getLevel() != null && details.getStudentClass().getLevel().getId() != details.getLevel().getId()){
                 //failed validation
                 model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
                 model.addAttribute("messageType", "error");
