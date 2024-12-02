@@ -9,8 +9,9 @@
     <title>Student</title>
 </head>
 <body>
-    <li><a href="${request.getContextPath()}/teacher">Emploi du temps</a></li>  
-    
+    <ul>
+                <li><a href="${request.getContextPath()}/student">Evaluation</a></li>
+    </ul>
     <div class="default-msg ${messageType}">
         <span>${message}</span>
     </div>
