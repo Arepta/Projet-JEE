@@ -1,25 +1,29 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!-- Page for user login -->
 <!DOCTYPE html>
-<link rel="stylesheet" type="text/css" href="css/index/login.css">
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Connexion</title>
+    <title>Login</title>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Connexion</h2>
-        <form action="" method="POST">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="username" required>
+    <h1>Login</h1>
+    <!-- Form for user login -->
+    <form action="login" method="post">
+        <!-- Input for email address -->
+        Email: <input type="email" name="username"><br>
+        <!-- Input for password -->
+        Password: <input type="password" name="password"><br>
+        <!-- Submit button -->
+        <input type="submit" value="Login">
+    </form>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-
-            <button type="submit">Login</button>
-        </form>
-    </div>
-
+    <!-- Display validation errors if login fails -->
+    <c:if test="${not empty error}">
+        <div>
+            <h3>Error:</h3>
+            <p>${error}</p>
+        </div>
+    </c:if>
 </body>
 </html>

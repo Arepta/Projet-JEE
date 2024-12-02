@@ -1,14 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!-- Page to display a message to the user -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>${title}</title>
+    <title>Message Page</title>
 </head>
 <body>
-
-    ${message}
-
-   
+    <!-- Display the message title -->
+    <h1>${title}</h1>
+    <!-- Display the message content -->
+    <p>${message}</p>
 </body>
 </html>

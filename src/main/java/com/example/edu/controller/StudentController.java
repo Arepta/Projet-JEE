@@ -20,8 +20,8 @@ import com.example.edu.tool.template.ScheduleTemplate;
 @Controller
 public class StudentController {
     
+    // Dependencies for services related to students, courses, teachers, classes, and schedules
     private final StudentService studentService;
-
     private final CoursesService coursesService;
     private final TeacherService teacherService;
     private final ClassesService clService;
@@ -29,6 +29,7 @@ public class StudentController {
     private final ScheduleService scheduleService;
     private ScheduleTemplate scheduleTemplate;
 
+    // Constructor injection for all required services
     @Autowired
     public StudentController(StudentService studentService, ScheduleService scheduleService, CoursesService coursesService, TeacherService teacherService, ClassesService clService, RoomService roomService) {
         this.studentService = studentService;
@@ -38,29 +39,35 @@ public class StudentController {
         this.clService = clService;
         this.roomService = roomService;
 
+        // Initializing schedule template with static title "Emploi du temps"
         this.scheduleTemplate = new ScheduleTemplate("Emploi du temps", false);
+        // Setting values for the schedule template from various services
         this.scheduleTemplate.setValuesFor("course", this.coursesService::getAllIdxName);
         this.scheduleTemplate.setValuesFor("teacher", this.teacherService::getAllIdxName);
         this.scheduleTemplate.setValuesFor("class", this.clService::getAllIdxName);
         this.scheduleTemplate.setValuesFor("room", this.roomService::getAllIdxName);
     }
     
+    // Mapping for student dashboard page
     @GetMapping("/student/")
     public String showDashboard(Model model, Authentication authentication) {
-
+        
+        // Retrieve the student's details based on the authenticated user's email
         Student student = studentService.getByEmail(authentication.getName()).orElse(null);
 
+        // Debugging prints for authentication name and student details
         System.out.println(authentication.getName());
         System.out.println(student);
 
-        if(student.getStudentClass() != null){
+        // Initialize the model with the student's schedule information
+        if (student.getStudentClass() != null) {
             scheduleTemplate.initModel(model, this.scheduleService.getAllForStudent(student));
-        }
-        else{
+        } else {
             scheduleTemplate.initModel(model, new ArrayList<>());
         }
+
+        // Return the view for the student dashboard
         return "student/dashboard";
     }
-    
-    
+
 }

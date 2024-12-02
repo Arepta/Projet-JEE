@@ -11,67 +11,72 @@ import org.springframework.stereotype.Service;
 import com.example.edu.model.ClassLevel;
 import com.example.edu.repository.ClassLevelRepository;
 
-
 @Service
 public class ClassLevelService {
+
+    // Repository dependency for managing class level data
     private final ClassLevelRepository classLevelRepository;
 
-    @Autowired // IMPORTANT
+    // Constructor injection for ClassLevelRepository
+    @Autowired
     public ClassLevelService(ClassLevelRepository classLevelRepository) {
         this.classLevelRepository = classLevelRepository;
-    
     }
 
+    // Method to retrieve all class levels
     public List<ClassLevel> getAll() {
         return this.classLevelRepository.findAll();
     }
 
+    // Method to retrieve a mapping of class level IDs with their names
     public Map<Long, String> getAllIdxName() {
-
-        List<ClassLevel> b = this.classLevelRepository.findAll();
-        Map<Long, String> r = new HashMap<>();
-        for(ClassLevel cl : b){
-            r.put(cl.getId(), cl.getName());
+        List<ClassLevel> classLevelList = this.classLevelRepository.findAll();
+        Map<Long, String> result = new HashMap<>();
+        for (ClassLevel cl : classLevelList) {
+            result.put(cl.getId(), cl.getName());
         }
-        return r;
+        return result;
     }
 
+    // Method to retrieve a mapping of class level IDs with their classes
     public Map<Long, List<Long>> getAllClasses() {
-
-        List<ClassLevel> b = this.classLevelRepository.findAll();
-        Map<Long, List<Long>> r = new HashMap<>();
-        for(ClassLevel cl : b){
-            r.put(cl.getId(), this.classLevelRepository.getClassesForId(cl.getId()));
+        List<ClassLevel> classLevelList = this.classLevelRepository.findAll();
+        Map<Long, List<Long>> result = new HashMap<>();
+        for (ClassLevel cl : classLevelList) {
+            result.put(cl.getId(), this.classLevelRepository.getClassesForId(cl.getId()));
         }
-        return r;
+        return result;
     }
 
+    // Method to retrieve a class level by its ID
     public Optional<ClassLevel> getById(Long id) {
         return this.classLevelRepository.findById(id);
     }
 
+    // Method to retrieve a class level by its name
     public Optional<ClassLevel> getByName(String name) {
         return this.classLevelRepository.findByName(name);
     }
 
-    public ClassLevel create(ClassLevel ClassLevelDetails) {
-        return this.classLevelRepository.save(ClassLevelDetails);
+    // Method to create a new class level
+    public ClassLevel create(ClassLevel classLevelDetails) {
+        return this.classLevelRepository.save(classLevelDetails);
     }
 
-    public ClassLevel update(ClassLevel ClassLevelDetails) {
-        Optional<ClassLevel> optionalClassLevel = this.classLevelRepository.findById(ClassLevelDetails.getId());
+    // Method to update an existing class level
+    public ClassLevel update(ClassLevel classLevelDetails) {
+        Optional<ClassLevel> optionalClassLevel = this.classLevelRepository.findById(classLevelDetails.getId());
 
         if (optionalClassLevel.isPresent()) {
             ClassLevel updatedClassLevel = optionalClassLevel.get();
-
-            updatedClassLevel.setName(ClassLevelDetails.getName());
-
+            updatedClassLevel.setName(classLevelDetails.getName());
             return this.classLevelRepository.save(updatedClassLevel);
         }
 
         return null;
     }
 
+    // Method to delete a class level by its ID
     public void delete(Long id) {
         this.classLevelRepository.deleteById(id);
     }

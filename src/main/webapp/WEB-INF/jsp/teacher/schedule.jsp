@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/css/admin/default.css">
-    <title>Administrateur</title>
+    <title>Professeur</title>
 </head>
 <body>
     <jsp:include page="header.jsp" flush="true"/>  

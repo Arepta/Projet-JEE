@@ -15,64 +15,67 @@ import com.example.edu.repository.TeacherRepository;
 @Service
 public class TeacherService {
 
-    private final TeacherRepository TeacherRepository;
-
+    // Repository and password encoder dependencies for managing teacher data
+    private final TeacherRepository teacherRepository;
     private PasswordEncoder passwordEncoder;
 
-
-    @Autowired // IMPORTANT
-    public TeacherService(TeacherRepository TeacherRepository, PasswordEncoder passwordEncoder) {
-        this.TeacherRepository = TeacherRepository;
+    // Constructor injection for TeacherRepository and PasswordEncoder
+    @Autowired
+    public TeacherService(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder) {
+        this.teacherRepository = teacherRepository;
         this.passwordEncoder = passwordEncoder;
-    
     }
 
+    // Method to retrieve all teachers
     public List<Teacher> getAllTeachers() {
-        return this.TeacherRepository.findAll();
+        return this.teacherRepository.findAll();
     }
 
+    // Method to retrieve a teacher by its ID
     public Optional<Teacher> getTeachersById(Long id) {
-        return this.TeacherRepository.findById(id); 
+        return this.teacherRepository.findById(id);
     }
 
+    // Method to retrieve a mapping of teacher IDs with their names
     public Map<Long, String> getAllIdxName() {
-
-        List<Teacher> b = this.TeacherRepository.findAll();
-        Map<Long, String> r = new HashMap<>();
-        for(Teacher cl : b){
-            r.put(cl.getId(), cl.getSurname() + " " + cl.getName());
+        List<Teacher> teacherList = this.teacherRepository.findAll();
+        Map<Long, String> result = new HashMap<>();
+        for (Teacher teacher : teacherList) {
+            result.put(teacher.getId(), teacher.getSurname() + " " + teacher.getName());
         }
-        return r;
+        return result;
     }
 
+    // Method to retrieve a teacher by email
     public Optional<Teacher> getByEmail(String email) {
-        return this.TeacherRepository.findByEmail(email); 
+        return this.teacherRepository.findByEmail(email);
     }
 
-    public Teacher createTeacher(Teacher TeacherDetails) {
-        TeacherDetails.setPassword(passwordEncoder.encode(TeacherDetails.getPassword()));
-        
-        return this.TeacherRepository.save(TeacherDetails); 
+    // Method to create a new teacher with hashed password
+    public Teacher createTeacher(Teacher teacherDetails) {
+        teacherDetails.setPassword(passwordEncoder.encode(teacherDetails.getPassword()));
+        return this.teacherRepository.save(teacherDetails);
     }
 
-    public Teacher updateTeacher(Teacher TeacherDetails) {
-        Optional<Teacher> optionalTeacher = this.TeacherRepository.findById(TeacherDetails.getId());
+    // Method to update an existing teacher
+    public Teacher updateTeacher(Teacher teacherDetails) {
+        Optional<Teacher> optionalTeacher = this.teacherRepository.findById(teacherDetails.getId());
 
         if (optionalTeacher.isPresent()) {
             Teacher updatedTeacher = optionalTeacher.get();
+            updatedTeacher.setEmail(teacherDetails.getEmail());
+            updatedTeacher.setName(teacherDetails.getName());
+            updatedTeacher.setSurname(teacherDetails.getSurname());
+            updatedTeacher.setField(teacherDetails.getField());
 
-            updatedTeacher.setEmail(TeacherDetails.getEmail());
-            updatedTeacher.setName(TeacherDetails.getName());
-            updatedTeacher.setSurname(TeacherDetails.getSurname());
-            updatedTeacher.setField(TeacherDetails.getField());
-
-            return this.TeacherRepository.save(updatedTeacher);
+            return this.teacherRepository.save(updatedTeacher);
         }
 
         return null;
     }
 
+    // Method to delete a teacher by its ID
     public void deleteTeacher(Long id) {
-        this.TeacherRepository.deleteById(id);
+        this.teacherRepository.deleteById(id);
     }
 }

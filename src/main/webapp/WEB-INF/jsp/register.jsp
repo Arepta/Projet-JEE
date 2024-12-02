@@ -1,35 +1,41 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!-- Page for user registration -->
 <!DOCTYPE html>
-<link rel="stylesheet" type="text/css" href="css/index/register.css">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register student Page</title>
+    <title>Register</title>
 </head>
 <body>
-
-    ${error}
-
-    <form action="" method="POST">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <label for="email">Email:</label>
-        <input type="email" name="username" required value="${old.username}">
-
-        <label for="surname">Nom:</label>
-        <input type="text" name="surname" value="${old.surname}">
-
-        <label for="name">prenom:</label>
-        <input type="text" name="name" value="${old.name}">
-
-        <label for="dateofbirth">Date de naissance:</label>
-        <input type="date" name="dateofbirth" required value="${old.dateofbirth}">
-
-        <label for="password">Mot de passe:</label>
-        <input type="password" name="password" required value="${old.password}">
-
-        <label for="password">Mot de passe:</label>
-        <input type="password" name="confirm_password" required>
-
-        <button type="submit">S'inscrire</button>
+    <h1>Register</h1>
+    <!-- Form for user registration -->
+    <form action="register" method="post">
+        <!-- Input for first name -->
+        First Name: <input type="text" name="name"><br>
+        <!-- Input for surname -->
+        Surname: <input type="text" name="surname"><br>
+        <!-- Input for email address -->
+        Email: <input type="email" name="username"><br>
+        <!-- Input for date of birth -->
+        Date of Birth: <input type="date" name="dateofbirth"><br>
+        <!-- Input for password -->
+        Password: <input type="password" name="password"><br>
+        <!-- Input to confirm password -->
+        Confirm Password: <input type="password" name="confirm_password"><br>
+        <!-- Submit button -->
+        <input type="submit" value="Register">
     </form>
+
+    <!-- Display validation errors if any exist -->
+    <c:if test="${not empty error}">
+        <div>
+            <h3>Errors:</h3>
+            <ul>
+                <c:forEach var="err" items="${error}">
+                    <li>${err}</li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
 </body>
 </html>

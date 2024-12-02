@@ -13,56 +13,61 @@ import com.example.edu.repository.FieldRepository;
 
 @Service
 public class FieldService {
-    private final FieldRepository FieldRepository;
 
-    @Autowired // IMPORTANT
-    public FieldService(FieldRepository FieldRepository) {
-        this.FieldRepository = FieldRepository;
-    
+    // Repository dependency for managing field data
+    private final FieldRepository fieldRepository;
+
+    // Constructor injection for FieldRepository
+    @Autowired
+    public FieldService(FieldRepository fieldRepository) {
+        this.fieldRepository = fieldRepository;
     }
 
+    // Method to retrieve all fields
     public List<FieldTeacher> getAll() {
-        return this.FieldRepository.findAll();
+        return this.fieldRepository.findAll();
     }
-    
 
+    // Method to retrieve a mapping of field IDs with their names
     public Map<Long, String> getAllIdxName() {
-
-        List<FieldTeacher> b = this.FieldRepository.findAll();
-        Map<Long, String> r = new HashMap<>();
-        for(FieldTeacher cl : b){
-            r.put(cl.getId(), cl.getName());
+        List<FieldTeacher> fieldsList = this.fieldRepository.findAll();
+        Map<Long, String> result = new HashMap<>();
+        for (FieldTeacher field : fieldsList) {
+            result.put(field.getId(), field.getName());
         }
-        return r;
+        return result;
     }
 
+    // Method to retrieve a field by its ID
     public Optional<FieldTeacher> getById(Long id) {
-        return this.FieldRepository.findById(id); 
+        return this.fieldRepository.findById(id);
     }
 
+    // Method to retrieve a field by its name
     public Optional<FieldTeacher> getByName(String name) {
-        return this.FieldRepository.findByName(name); 
+        return this.fieldRepository.findByName(name);
     }
 
-    public FieldTeacher create(FieldTeacher FieldDetails) {
-        return this.FieldRepository.save(FieldDetails); 
+    // Method to create a new field
+    public FieldTeacher create(FieldTeacher fieldDetails) {
+        return this.fieldRepository.save(fieldDetails);
     }
 
-    public FieldTeacher update(FieldTeacher FieldDetails) {
-        Optional<FieldTeacher> optionalField = this.FieldRepository.findById(FieldDetails.getId());
+    // Method to update an existing field
+    public FieldTeacher update(FieldTeacher fieldDetails) {
+        Optional<FieldTeacher> optionalField = this.fieldRepository.findById(fieldDetails.getId());
 
         if (optionalField.isPresent()) {
             FieldTeacher updatedField = optionalField.get();
-
-            updatedField.setName(FieldDetails.getName());
-
-            return this.FieldRepository.save(updatedField);
+            updatedField.setName(fieldDetails.getName());
+            return this.fieldRepository.save(updatedField);
         }
 
         return null;
     }
 
+    // Method to delete a field by its ID
     public void delete(Long id) {
-        this.FieldRepository.deleteById(id);
+        this.fieldRepository.deleteById(id);
     }
 }
