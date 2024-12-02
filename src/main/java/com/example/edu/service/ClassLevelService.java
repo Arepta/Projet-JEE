@@ -23,7 +23,7 @@ public class ClassLevelService {
     }
 
     public List<ClassLevel> getAll() {
-        return this.classLevelRepository.findAll(); //build in
+        return this.classLevelRepository.findAll();
     }
 
     public Map<Long, String> getAllIdxName() {
@@ -33,7 +33,7 @@ public class ClassLevelService {
         for(ClassLevel cl : b){
             r.put(cl.getId(), cl.getName());
         }
-        return r; //build in
+        return r;
     }
 
     public Map<Long, List<Long>> getAllClasses() {
@@ -43,19 +43,19 @@ public class ClassLevelService {
         for(ClassLevel cl : b){
             r.put(cl.getId(), this.classLevelRepository.getClassesForId(cl.getId()));
         }
-        return r; //build in
+        return r;
     }
 
     public Optional<ClassLevel> getById(Long id) {
-        return this.classLevelRepository.findById(id);  //build in
+        return this.classLevelRepository.findById(id);
     }
 
     public Optional<ClassLevel> getByName(String name) {
-        return this.classLevelRepository.findByName(name);  //build in
+        return this.classLevelRepository.findByName(name);
     }
 
     public ClassLevel create(ClassLevel ClassLevelDetails) {
-        return this.classLevelRepository.save(ClassLevelDetails);  //build in
+        return this.classLevelRepository.save(ClassLevelDetails);
     }
 
     public ClassLevel update(ClassLevel ClassLevelDetails) {

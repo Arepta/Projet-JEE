@@ -24,15 +24,15 @@ public class ScheduleService {
     }
 
     public List<Schedule> getAll() {
-        return this.scheduleRepository.findAll(); //build in
+        return this.scheduleRepository.findAll();
     }
 
     public List<Schedule> getAllForTeacher(Teacher teacher) {
-        return this.scheduleRepository.findByTeacherId(teacher.getId()); //build in
+        return this.scheduleRepository.findByTeacherId(teacher.getId());
     }
 
     public List<Schedule> getAllForStudent(Student student) {
-        return this.scheduleRepository.findByClassId(student.getStudentClass().getId()); //build in
+        return this.scheduleRepository.findByClassId(student.getStudentClass().getId());
     }
 
     public boolean isTeacherAvailable(Teacher teacher, LocalDateTime start, LocalDateTime end){
@@ -60,11 +60,11 @@ public class ScheduleService {
     }
 
     public Optional<Schedule> getById(Long id) {
-        return this.scheduleRepository.findById(id);  //build in
+        return this.scheduleRepository.findById(id); 
     }
 
     public Schedule create(Schedule details) {
-        return this.scheduleRepository.save(details);  //build in
+        return this.scheduleRepository.save(details); 
     }
 
     public Schedule update(Schedule details) {

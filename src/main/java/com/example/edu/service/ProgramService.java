@@ -22,7 +22,7 @@ public class ProgramService {
     }
 
     public List<Program> getAll() {
-        return this.programRepository.findAll(); //build in
+        return this.programRepository.findAll();
     }
 
     public Map<Long, String> getAllIdxName() {
@@ -32,7 +32,7 @@ public class ProgramService {
         for(Program cl : b){
             r.put(cl.getId(), cl.getName());
         }
-        return r; //build in
+        return r;
     }
 
     public Map<Long, List<Long>> getAllLevel() {
@@ -43,19 +43,19 @@ public class ProgramService {
         for(Program cl : b){
             r.put(cl.getId(), this.programRepository.getLevelForId(cl.getId()));
         }
-        return r; //build in
+        return r;
     }
 
     public Optional<Program> getById(Long id) {
-        return this.programRepository.findById(id);  //build in
+        return this.programRepository.findById(id); 
     }
 
     public Optional<Program> getByName(String name) {
-        return this.programRepository.findByName(name);  //build in
+        return this.programRepository.findByName(name); 
     }
 
     public Program create(Program ProgramDetails) {
-        return this.programRepository.save(ProgramDetails);  //build in
+        return this.programRepository.save(ProgramDetails); 
     }
 
     public Program update(Program ProgramDetails) {

@@ -28,11 +28,11 @@ public class TeacherService {
     }
 
     public List<Teacher> getAllTeachers() {
-        return this.TeacherRepository.findAll(); //build in
+        return this.TeacherRepository.findAll();
     }
 
     public Optional<Teacher> getTeachersById(Long id) {
-        return this.TeacherRepository.findById(id);  //build in
+        return this.TeacherRepository.findById(id); 
     }
 
     public Map<Long, String> getAllIdxName() {
@@ -42,17 +42,17 @@ public class TeacherService {
         for(Teacher cl : b){
             r.put(cl.getId(), cl.getSurname() + " " + cl.getName());
         }
-        return r; //build in
+        return r;
     }
 
     public Optional<Teacher> getByEmail(String email) {
-        return this.TeacherRepository.findByEmail(email);  //build in
+        return this.TeacherRepository.findByEmail(email); 
     }
 
     public Teacher createTeacher(Teacher TeacherDetails) {
         TeacherDetails.setPassword(passwordEncoder.encode(TeacherDetails.getPassword()));
         
-        return this.TeacherRepository.save(TeacherDetails);  //build in
+        return this.TeacherRepository.save(TeacherDetails); 
     }
 
     public Teacher updateTeacher(Teacher TeacherDetails) {

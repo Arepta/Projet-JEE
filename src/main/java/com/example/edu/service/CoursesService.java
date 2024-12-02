@@ -22,7 +22,7 @@ public class CoursesService {
     }
 
     public List<Courses> getAll() {
-        return this.coursesRepository.findAll(); //build in
+        return this.coursesRepository.findAll();
     }
 
     public Map<Long, String> getAllIdxName() {
@@ -32,7 +32,7 @@ public class CoursesService {
         for(Courses cl : b){
             r.put(cl.getId(), cl.getName());
         }
-        return r; //build in
+        return r;
     }
 
     public Map<Long, List<Long>> getAllTeachers() {
@@ -42,15 +42,15 @@ public class CoursesService {
         for(Courses cl : b){
             r.put(cl.getId(), this.coursesRepository.getTeacherForId(cl.getId()));
         }
-        return r; //build in
+        return r;
     }
 
     public Optional<Courses> getById(Long id) {
-        return this.coursesRepository.findById(id);  //build in
+        return this.coursesRepository.findById(id); 
     }
 
     public Courses create(Courses details) {
-        return this.coursesRepository.save(details);  //build in
+        return this.coursesRepository.save(details); 
     }
 
     public Courses update(Courses details) {

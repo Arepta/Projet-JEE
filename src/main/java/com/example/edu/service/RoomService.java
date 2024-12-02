@@ -22,7 +22,7 @@ public class RoomService {
     }
 
     public List<Room> getAll() {
-        return this.roomRepository.findAll(); //build in
+        return this.roomRepository.findAll();
     }
 
     public Map<Long, String> getAllIdxName() {
@@ -32,19 +32,19 @@ public class RoomService {
         for(Room cl : b){
             r.put(cl.getId(), cl.getName());
         }
-        return r; //build in
+        return r;
     }
 
     public Optional<Room> getById(Long id) {
-        return this.roomRepository.findById(id);  //build in
+        return this.roomRepository.findById(id); 
     }
 
     public Optional<Room> getByName(String name) {
-        return this.roomRepository.findByName(name);  //build in
+        return this.roomRepository.findByName(name); 
     }
 
     public Room create(Room RoomDetails) {
-        return this.roomRepository.save(RoomDetails);  //build in
+        return this.roomRepository.save(RoomDetails); 
     }
 
     public Room update(Room RoomDetails) {

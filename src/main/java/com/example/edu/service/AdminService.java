@@ -15,27 +15,27 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private PasswordEncoder passwordEncoder;
 
-    @Autowired // IMPORTANT
+    @Autowired
     public AdminService(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     public List<Admin> getAllAdmins() {
-        return this.adminRepository.findAll(); //build in
+        return this.adminRepository.findAll();
     }
 
     public Optional<Admin> getAdminsById(Long id) {
-        return this.adminRepository.findById(id);  //build in
+        return this.adminRepository.findById(id);
     }
 
     public Optional<Admin> getAdminsByEmail(String email) {
-        return this.adminRepository.findByEmail(email);  //build in
+        return this.adminRepository.findByEmail(email);
     }
 
     public Admin createAdmin(Admin AdminDetails) {
         AdminDetails.setPassword(passwordEncoder.encode(AdminDetails.getPassword()));
-        return this.adminRepository.save(AdminDetails);  //build in
+        return this.adminRepository.save(AdminDetails);
     }
 
     public Admin updateAdmin(Long id, Admin AdminDetails) {

@@ -27,130 +27,130 @@ import com.example.edu.tool.Validator.Validator;
 import com.example.edu.tool.Validator.Exceptions.unknownRuleException;
 import com.example.edu.tool.template.TableSingle;
 
+// Marks this class as a Spring MVC controller and maps requests with the prefix "/admin/config".
 @Controller
 @RequestMapping("/admin/config")
 public class AdminClassesController {
+
+    // Dependencies for services used in this controller.
     private final ClassesService classService;
     private final ClassLevelService clService;
     private final ProgramService programService;
+
+    // URL segment used in redirections for this controller.
     private final String absoluteURL = "admin/config/class";
+
+    // Template for displaying table data in the view.
     private TableSingle tableTemplate;
 
-     @Autowired
+    // Constructor with @Autowired for dependency injection.
+    @Autowired
     public AdminClassesController(ClassesService classService, ClassLevelService clService, ProgramService programService) {
         this.classService = classService;
         this.clService = clService;
         this.programService = programService;
 
-        Map<String, String> columnToLabel = Map.of( //translate attribute name to label name (More readable) [OPTIONAL]
-            "id","ID",
-            "name","Nom",
-            "program","Cursus",
-            "level","Promotion"
+        // Configuration for the table template: mapping column names to labels and defining display rules.
+        Map<String, String> columnToLabel = Map.of(
+            "id", "ID",
+            "name", "Nom",
+            "program", "Cursus",
+            "level", "Promotion"
         );
         List<String> columnDisplayed = Arrays.asList("id", "name", "program", "level");
 
+        // Initialize the table template with column labels and display rules.
         this.tableTemplate = new TableSingle("Classes", columnToLabel, columnDisplayed);
 
+        // Set values and filters for dropdowns in the table.
         this.tableTemplate.setValuesFor("program", this.programService::getAllIdxName);
         this.tableTemplate.setValuesFor("level", this.clService::getAllIdxName);
         this.tableTemplate.addFilter("program");
         this.tableTemplate.addFilter("level");
-        this.tableTemplate.addLink("program", "level", this.programService::getAllLevel); 
+
+        // Add a link to dynamically populate levels based on the selected program.
+        this.tableTemplate.addLink("program", "level", this.programService::getAllLevel);
     }
 
     /*
-     * GET - http://localhost:8080/admin/student
-     * Page to manage students datas.
-     * 
+     * Handles GET requests to "/admin/config/class".
+     * Renders the default admin page for managing classes.
      */
     @GetMapping("/class")
     public String get(Model model) {
-
+        // Populate the model with class data and table template configuration.
         tableTemplate.initModel(model, this.classService.getAll(), Classes.class);
-        return "admin/default";  
+        return "admin/default"; // Return the view for rendering.
     }
 
-    
     /*
-     * PUT - http://localhost:8080/admin/student
-     * update a student.
-     * 
+     * Handles PUT requests to "/admin/config/class".
+     * Updates class information based on the request parameters.
      */
     @PutMapping("/class")
-    public String put(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
+    public String put(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) 
+            throws unknownRuleException {
 
-        //Create validator to validate request content
+        // Validator to enforce input validation rules.
         Validator requestContentValidator = new Validator(Map.of(
-            "id", "required|int|min=0",
-            "name", "default=NULL|max=100",
-            "program", "required|int|min=0",
-            "level", "default=0|int"
-            )
-        );
+            "id", "required|int|min=0", // ID is required and must be a non-negative integer.
+            "name", "default=NULL|max=100", // Name is optional but must be <= 100 characters.
+            "program", "required|int|min=0", // Program ID is required and must be a non-negative integer.
+            "level", "default=0|int" // Level is optional and must be a non-negative integer.
+        ));
 
-        if( requestContentValidator.validateRequest(request) ){ //validate the request
-
+        // Validate the incoming request parameters.
+        if (requestContentValidator.validateRequest(request)) {
+            // Fetch the program and level based on IDs provided in the request.
             Optional<Program> programOp = this.programService.getById(Long.parseLong(request.getFirst("program")));
-            Program program = programOp.isPresent() ? programOp.get() : null;
+            Program program = programOp.orElse(null);
             Optional<ClassLevel> levelOp = this.clService.getById(Long.parseLong(request.getFirst("level")));
-            ClassLevel level = levelOp.isPresent() ? levelOp.get() : null;
+            ClassLevel level = levelOp.orElse(null);
 
-            if(program == null){
-                //failed validation
+            if (program == null) {
+                // If program does not exist, add an error message to the model.
                 model.addAttribute("message", "Le cursus n'existe pas.");
                 model.addAttribute("messageType", "error");
                 tableTemplate.initModel(model, null, Classes.class, false, requestContentValidator);
-            }
-            else{
-
+            } else {
+                // Validate the level against the program's allowed levels.
                 List<Long> possibleLevel = this.programService.getAllLevel().get(program.getId());
-
                 Classes details = new Classes(
                     Long.parseLong(request.getFirst("id")),
-                    request.getFirst("name"), 
+                    request.getFirst("name"),
                     program,
                     level == null ? null : (possibleLevel.contains(level.getId()) ? level : null)
                 );
 
-
-    
-    
-                if(this.classService.update(details) != null){
-                    //processed
+                // Attempt to update the class information.
+                if (this.classService.update(details) != null) {
                     model.addAttribute("message", "La classe a été mit à jour.");
                     model.addAttribute("messageType", "success");
-                }
-                else{
-                    //unexcepted error in process
+                } else {
                     model.addAttribute("message", "Une erreur est survenue :/");
                     model.addAttribute("messageType", "warning");
                 }
             }
-
-
-        } 
-        else{
-            //failed validation
+        } else {
+            // Validation failed, return error messages.
             model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
             model.addAttribute("messageType", "error");
-
             tableTemplate.initModel(model, null, Classes.class, false, requestContentValidator);
         }
 
         tableTemplate.prepareRedirect(model, redirectAttributes);
-        return "redirect:/"+absoluteURL;  
+        return "redirect:/" + absoluteURL;
     }
 
     /*
-     * POST - http://localhost:8080/admin/student
-     * Page to manage students datas.
-     * 
+     * Handles POST requests to "/admin/config/class".
+     * Creates a new class based on the request parameters.
      */
     @PostMapping("/class")
     public String post(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
 
-        //Create validator to validate request content
+        // Similar validation and logic as the PUT method.
+        // The difference is creating a new class instead of updating an existing one.
         Validator requestContentValidator = new Validator(Map.of(
             "name", "default=NULL|max=100",
             "program", "required|int|min=0",
@@ -158,7 +158,7 @@ public class AdminClassesController {
             )
         );
 
-        if( requestContentValidator.validateRequest(request) ){ //validate the request
+        if( requestContentValidator.validateRequest(request) ){
 
             Optional<Program> programOp = this.programService.getById(Long.parseLong(request.getFirst("program")));
             Program program = programOp.isPresent() ? programOp.get() : null;
@@ -166,7 +166,7 @@ public class AdminClassesController {
             ClassLevel level = levelOp.isPresent() ? levelOp.get() : null;
 
             if(program == null){
-                //failed validation
+                
                 model.addAttribute("message", "Le cursus n'existe pas.");
                 model.addAttribute("messageType", "error");
                 tableTemplate.initModel(model, null, Classes.class, false, requestContentValidator);
@@ -184,12 +184,12 @@ public class AdminClassesController {
     
     
                 if(this.classService.create(details) != null){
-                    //processed
+                    
                     model.addAttribute("message", "La classe a été ajouté.");
                     model.addAttribute("messageType", "success");
                 }
                 else{
-                    //unexcepted error in process
+                    
                     model.addAttribute("message", "Une erreur est survenue :/");
                     model.addAttribute("messageType", "warning");
                 }
@@ -197,7 +197,7 @@ public class AdminClassesController {
 
         } 
         else{
-            //failed validation
+            
             model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
             model.addAttribute("messageType", "error");
 
@@ -209,33 +209,29 @@ public class AdminClassesController {
     }
 
     /*
-     * POST - http://localhost:8080/admin/student
-     * Page to manage students datas.
-     * 
+     * Handles DELETE requests to "/admin/config/class".
+     * Deletes a class based on the ID provided in the request parameters.
      */
     @DeleteMapping("/class")
-    public String delete(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
+    public String delete(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) 
+            throws unknownRuleException {
 
-        //Create validator to validate request content
+        // Validate the input for the class ID to delete.
         Validator requestContentValidator = new Validator(Map.of(
-                "id", "required|int|min=0" //must be a number 0 min, MANDATORY
-            )
-        );
+            "id", "required|int|min=0" // ID must be a non-negative integer and is required.
+        ));
 
-        if( requestContentValidator.validateRequest(request) ){ //validate the request
-
+        if (requestContentValidator.validateRequest(request)) {
+            // Perform the delete operation.
             this.classService.delete(Long.parseLong(request.getFirst("id")));
             model.addAttribute("message", "La classe a été supprimé.");
             model.addAttribute("messageType", "success");
- 
-        } 
-        else{
-            //failed validation
+        } else {
             model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
             model.addAttribute("messageType", "error");
         }
 
         tableTemplate.prepareRedirect(model, redirectAttributes);
-        return "redirect:/"+absoluteURL;  
+        return "redirect:/" + absoluteURL;
     }
 }

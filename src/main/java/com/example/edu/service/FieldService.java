@@ -22,7 +22,7 @@ public class FieldService {
     }
 
     public List<FieldTeacher> getAll() {
-        return this.FieldRepository.findAll(); //build in
+        return this.FieldRepository.findAll();
     }
     
 
@@ -33,19 +33,19 @@ public class FieldService {
         for(FieldTeacher cl : b){
             r.put(cl.getId(), cl.getName());
         }
-        return r; //build in
+        return r;
     }
 
     public Optional<FieldTeacher> getById(Long id) {
-        return this.FieldRepository.findById(id);  //build in
+        return this.FieldRepository.findById(id); 
     }
 
     public Optional<FieldTeacher> getByName(String name) {
-        return this.FieldRepository.findByName(name);  //build in
+        return this.FieldRepository.findByName(name); 
     }
 
     public FieldTeacher create(FieldTeacher FieldDetails) {
-        return this.FieldRepository.save(FieldDetails);  //build in
+        return this.FieldRepository.save(FieldDetails); 
     }
 
     public FieldTeacher update(FieldTeacher FieldDetails) {

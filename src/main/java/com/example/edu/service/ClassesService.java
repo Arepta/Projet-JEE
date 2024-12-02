@@ -44,7 +44,7 @@ public class ClassesService {
             
         }
         System.out.println(b);
-        return b; //build in
+        return b;
     }
 
     public Map<Long, String> getAllIdxName() {
@@ -54,7 +54,7 @@ public class ClassesService {
         for(Classes cl : b){
             r.put(cl.getId(), cl.getName());
         }
-        return r; //build in
+        return r;
     }
 
     public Map<Long, List<Long>> getAllRoom() {
@@ -65,19 +65,19 @@ public class ClassesService {
         for(Classes cl : b){
             r.put(cl.getId(), this.classesRepository.findRoomForId(cl.getId()));
         }
-        return r; //build in
+        return r;
     }
 
     public Optional<Classes> getById(Long id) {
-        return this.classesRepository.findById(id);  //build in
+        return this.classesRepository.findById(id);
     }
 
     public Optional<Classes> getByName(String name) {
-        return this.classesRepository.findByName(name);  //build in
+        return this.classesRepository.findByName(name);
     }
 
     public Classes create(Classes ClassesDetails) {
-        return this.classesRepository.save(ClassesDetails);  //build in
+        return this.classesRepository.save(ClassesDetails);
     }
 
     public Classes update(Classes ClassesDetails) {

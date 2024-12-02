@@ -38,15 +38,20 @@ import com.example.edu.tool.template.ScheduleTemplate;
 @RequestMapping("/admin/courses")
 public class AdminScheduleController {
 
+    // Injecting service classes to manage courses, teachers, classes, rooms, and schedules
     private final CoursesService coursesService;
     private final TeacherService teacherService;
     private final ClassesService clService;
     private final RoomService roomService;
     private final ScheduleService scheduleService;
 
+    // URL path for the admin schedule page
     private final String absoluteURL = "admin/courses/schedule";
+    
+    // A schedule template used for managing schedule-related data
     private ScheduleTemplate scheduleTemplate;
 
+    // Constructor to initialize the controller with the services and template
     @Autowired
     public AdminScheduleController(CoursesService coursesService, TeacherService teacherService, ClassesService clService, RoomService roomService, ScheduleService scheduleService) {
         this.coursesService = coursesService;
@@ -55,38 +60,39 @@ public class AdminScheduleController {
         this.roomService = roomService;
         this.scheduleService = scheduleService;
 
+        // Initialize the schedule template with title and visibility
         this.scheduleTemplate = new ScheduleTemplate("Emploi du temps", true);
 
+        // Set the available options for course, teacher, class, and room in the schedule template
         this.scheduleTemplate.setValuesFor("course", this.coursesService::getAllIdxName);
         this.scheduleTemplate.setValuesFor("teacher", this.teacherService::getAllIdxName);
         this.scheduleTemplate.setValuesFor("class", this.clService::getAllIdxName);
         this.scheduleTemplate.setValuesFor("room", this.roomService::getAllIdxName);
+        
+        // Link class and room, and course and teacher in the schedule template
         this.scheduleTemplate.addLink("class", "room", this.clService::getAllRoom); 
         this.scheduleTemplate.addLink("course", "teacher", this.coursesService::getAllTeachers); 
     }
 
     /*
      * GET - http://localhost:8080/admin/student
-     * Page to manage students datas.
-     * 
+     * Page to manage students' data.
      */
     @GetMapping("/schedule")
     public String get(Model model) {
-
+        // Initialize the model with schedule data from the service
         scheduleTemplate.initModel(model, this.scheduleService.getAll());
-        return "admin/schedule";  
+        return "admin/schedule";  // Return the schedule management view
     }
 
-    
     /*
      * PUT - http://localhost:8080/admin/student
-     * update a student.
-     * 
+     * Update an existing schedule entry.
      */
     @PutMapping("/schedule")
-    public String put(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
+    public String put(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException {
 
-        //Create validator to validate request content
+        // Create a validator to validate the request content (check required fields, types, and constraints)
         Validator requestContentValidator = new Validator(Map.of(
             "id", "required|int|min=0",
             "course", "required|int|min=0",
@@ -95,19 +101,21 @@ public class AdminScheduleController {
             "room", "required|int|min=0",
             "start", "required|datetime",
             "end", "required|datetime"
-            )
-        );
+        ));
 
+        // Add the seconds to the 'start' and 'end' times for consistency
         request.putAll(Map.of("start", Arrays.asList(request.getFirst("start") + ":00")));
         request.putAll(Map.of("end", Arrays.asList(request.getFirst("end") + ":00")));
 
-        if( requestContentValidator.validateRequest(request) ){ //validate the request
+        // Validate the request content
+        if (requestContentValidator.validateRequest(request)) {
 
+            // Parse start and end time strings into LocalDateTime objects
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
             LocalDateTime start = LocalDateTime.parse(request.getFirst("start"), formatter);
             LocalDateTime end = LocalDateTime.parse(request.getFirst("end"), formatter);
 
+            // Retrieve course, teacher, class, and room from the database
             Optional<Courses> courseOp = this.coursesService.getById(Long.parseLong(request.getFirst("course")));
             Courses course = courseOp.isPresent() ? courseOp.get() : null;
 
@@ -120,7 +128,7 @@ public class AdminScheduleController {
             Optional<Room> roonOp = this.roomService.getById(Long.parseLong(request.getFirst("room")));
             Room room = roonOp.isPresent() ? roonOp.get() : null;
 
-
+            // Create a Schedule object with the parsed data
             Schedule details = new Schedule(
                 Long.parseLong(request.getFirst("id")),
                 room,
@@ -131,66 +139,55 @@ public class AdminScheduleController {
                 end
             );
 
-            if(start.isAfter(end) || start.getHour() < 8 || (end.getHour() >= 20 && end.getMinute() > 0 && end.getSecond() > 0) || start.plusHours(12).isBefore(end)){
-
-                model.addAttribute("message", "Un cours ne peut pas exceder 12h, commencer avant 8h00 ou terminer apres 20h00.");
+            // Validate schedule data (check if the time is valid, if the room, teacher, and class are available, etc.)
+            if (start.isAfter(end) || start.getHour() < 8 || (end.getHour() >= 20 && end.getMinute() > 0 && end.getSecond() > 0) || start.plusHours(12).isBefore(end)) {
+                model.addAttribute("message", "A course cannot exceed 12 hours, start before 8 AM, or end after 8 PM.");
                 model.addAttribute("messageType", "warning");
-            }
-            else if(!this.scheduleService.isRoomAvailableId(room, start, end, details.getId())){
-                model.addAttribute("message", "Cette salle est déjà utilisé sur cette tranche horaire.");
-                model.addAttribute("messageType", "warning");
-                scheduleTemplate.initModel(model, null, false, requestContentValidator);
-            }
-            else if(!this.scheduleService.isTeacherAvailableId(teacher, start, end, details.getId())){
-                model.addAttribute("message", "Ce professeur est déjà en cours sur cette tranche horaire.");
+            } else if (!this.scheduleService.isRoomAvailableId(room, start, end, details.getId())) {
+                model.addAttribute("message", "This room is already occupied during this time slot.");
                 model.addAttribute("messageType", "warning");
                 scheduleTemplate.initModel(model, null, false, requestContentValidator);
-            }
-            else if(!this.scheduleService.isClassAvailableId(classes, start, end, details.getId())){
-                model.addAttribute("message", "Cette classe est déjà en cours sur cette tranche horaire.");
+            } else if (!this.scheduleService.isTeacherAvailableId(teacher, start, end, details.getId())) {
+                model.addAttribute("message", "This teacher is already teaching during this time slot.");
                 model.addAttribute("messageType", "warning");
                 scheduleTemplate.initModel(model, null, false, requestContentValidator);
-            }
-            else if(room == null || classes == null || teacher == null || course == null){
-                model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
+            } else if (!this.scheduleService.isClassAvailableId(classes, start, end, details.getId())) {
+                model.addAttribute("message", "This class is already scheduled during this time slot.");
+                model.addAttribute("messageType", "warning");
+                scheduleTemplate.initModel(model, null, false, requestContentValidator);
+            } else if (room == null || classes == null || teacher == null || course == null) {
+                model.addAttribute("message", "Some fields are incorrect or incomplete.");
                 model.addAttribute("messageType", "error");
-
                 scheduleTemplate.initModel(model, null, false, requestContentValidator);
-            }
-            else if(this.scheduleService.update(details) != null || teacher.getField().getId() != course.getField().getId()){
-                //processed
-                model.addAttribute("message", "Le cours a été mit à jour.");
+            } else if (this.scheduleService.update(details) != null || teacher.getField().getId() != course.getField().getId()) {
+                // Successfully updated the course schedule
+                model.addAttribute("message", "The course has been updated.");
                 model.addAttribute("messageType", "success");
-            }
-            else{
-                //unexcepted error in process
-                model.addAttribute("message", "Une erreur est survenue :/");
+            } else {
+                // Unexpected error
+                model.addAttribute("message", "An error occurred :/");
                 model.addAttribute("messageType", "warning");
             }
 
-
-        } 
-        else{
-            //failed validation
-            model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
+        } else {
+            // Validation failed
+            model.addAttribute("message", "Some fields are incorrect or incomplete.");
             model.addAttribute("messageType", "error");
-
             scheduleTemplate.initModel(model, null, false, requestContentValidator);
         }
 
+        // Prepare for a redirect with the updated model
         scheduleTemplate.prepareRedirect(model, redirectAttributes);
         return "redirect:/"+absoluteURL;  
     }
 
     /*
      * POST - http://localhost:8080/admin/student
-     * Page to manage students datas.
-     * 
+     * Create a new course schedule entry.
      */
     @PostMapping("/schedule")
-    public String post(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
-
-        //Create validator to validate request content
+    public String post(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException {
+        // Same validation logic as in the PUT method for creating a schedule entry
         Validator requestContentValidator = new Validator(Map.of(
             "course", "required|int|min=0",
             "teacher", "required|int|min=0",
@@ -198,19 +195,17 @@ public class AdminScheduleController {
             "room", "required|int|min=0",
             "start", "required|datetime",
             "end", "required|datetime"
-            )
-        );
+        ));
         
         request.putAll(Map.of("start", Arrays.asList(request.getFirst("start") + ":00")));
         request.putAll(Map.of("end", Arrays.asList(request.getFirst("end") + ":00")));
 
-        if( requestContentValidator.validateRequest(request) ){ //validate the request
-
+        if (requestContentValidator.validateRequest(request)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
             LocalDateTime start = LocalDateTime.parse(request.getFirst("start"), formatter);
             LocalDateTime end = LocalDateTime.parse(request.getFirst("end"), formatter);
 
+            // Retrieve course, teacher, class, and room
             Optional<Courses> courseOp = this.coursesService.getById(Long.parseLong(request.getFirst("course")));
             Courses course = courseOp.isPresent() ? courseOp.get() : null;
 
@@ -223,9 +218,8 @@ public class AdminScheduleController {
             Optional<Room> roonOp = this.roomService.getById(Long.parseLong(request.getFirst("room")));
             Room room = roonOp.isPresent() ? roonOp.get() : null;
 
-
             Schedule details = new Schedule(
-                null,
+                null,  // Null ID because it's a new schedule
                 room,
                 classes,
                 teacher,
@@ -233,51 +227,38 @@ public class AdminScheduleController {
                 start,
                 end
             );
-            
-            if(start.isAfter(end) || start.getHour() < 8 || (end.getHour() >= 20 && end.getMinute() > 0 && end.getSecond() > 0) || start.plusHours(12).isBefore(end)){
-                //processed
-                model.addAttribute("message", "Un cours ne peut pas exceder 12h, commencer avant 8h00 ou terminer apres 20h00.");
+
+            // Perform validations (same as PUT method)
+            if (start.isAfter(end) || start.getHour() < 8 || (end.getHour() >= 20 && end.getMinute() > 0 && end.getSecond() > 0) || start.plusHours(12).isBefore(end)) {
+                model.addAttribute("message", "A course cannot exceed 12 hours, start before 8 AM, or end after 8 PM.");
                 model.addAttribute("messageType", "warning");
                 scheduleTemplate.initModel(model, null, true, requestContentValidator);
-            }
-            else if(!this.scheduleService.isRoomAvailable(room, start, end)){
-                model.addAttribute("message", "Cette salle est déjà utilisé sur cette tranche horaire.");
+            } else if (!this.scheduleService.isRoomAvailable(room, start, end)) {
+                model.addAttribute("message", "This room is already occupied during this time slot.");
                 model.addAttribute("messageType", "warning");
                 scheduleTemplate.initModel(model, null, true, requestContentValidator);
-            }
-            else if(!this.scheduleService.isTeacherAvailable(teacher, start, end)){
-                model.addAttribute("message", "Ce professeur est déjà en cours sur cette tranche horaire.");
+            } else if (!this.scheduleService.isTeacherAvailable(teacher, start, end)) {
+                model.addAttribute("message", "This teacher is already teaching during this time slot.");
                 model.addAttribute("messageType", "warning");
                 scheduleTemplate.initModel(model, null, true, requestContentValidator);
-            }
-            else if(!this.scheduleService.isClassAvailable(classes, start, end)){
-                model.addAttribute("message", "Cette classe est déjà en cours sur cette tranche horaire.");
+            } else if (!this.scheduleService.isClassAvailable(classes, start, end)) {
+                model.addAttribute("message", "This class is already scheduled during this time slot.");
                 model.addAttribute("messageType", "warning");
                 scheduleTemplate.initModel(model, null, true, requestContentValidator);
-            }
-            else if(room == null || classes == null || teacher == null || course == null){
-                model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
+            } else if (room == null || classes == null || teacher == null || course == null) {
+                model.addAttribute("message", "Some fields are incorrect or incomplete.");
                 model.addAttribute("messageType", "error");
-
                 scheduleTemplate.initModel(model, null, true, requestContentValidator);
-            }
-            else if(this.scheduleService.create(details) != null){
-                //processed
-                model.addAttribute("message", "Le cours a été ajouté.");
+            } else if (this.scheduleService.create(details) != null) {
+                model.addAttribute("message", "The course has been added.");
                 model.addAttribute("messageType", "success");
-            }
-            else{
-                    //unexcepted error in process
-                model.addAttribute("message", "Une erreur est survenue :/");
+            } else {
+                model.addAttribute("message", "An error occurred :/");
                 model.addAttribute("messageType", "warning");
             }
-
-        } 
-        else{
-            //failed validation
-            model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
+        } else {
+            model.addAttribute("message", "Some fields are incorrect or incomplete.");
             model.addAttribute("messageType", "error");
-
             scheduleTemplate.initModel(model, null, true, requestContentValidator);
         }
 
@@ -286,29 +267,24 @@ public class AdminScheduleController {
     }
 
     /*
-     * POST - http://localhost:8080/admin/student
-     * Page to manage students datas.
-     * 
+     * DELETE - http://localhost:8080/admin/student
+     * Delete a course schedule entry.
      */
     @DeleteMapping("/schedule")
-    public String delete(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException{
+    public String delete(Model model, RedirectAttributes redirectAttributes, @RequestParam MultiValueMap<String, String> request) throws unknownRuleException {
 
-        //Create validator to validate request content
+        // Validator to ensure the 'id' field is valid
         Validator requestContentValidator = new Validator(Map.of(
-                "id", "required|int|min=0" //must be a number 0 min, MANDATORY
-            )
-        );
+            "id", "required|int|min=0"  // id is required and must be a non-negative integer
+        ));
 
-        if( requestContentValidator.validateRequest(request) ){ //validate the request
-
+        if (requestContentValidator.validateRequest(request)) {
+            // Delete the schedule entry by its ID
             this.scheduleService.delete(Long.parseLong(request.getFirst("id")));
-            model.addAttribute("message", "Le cours a été supprimé.");
+            model.addAttribute("message", "The course has been deleted.");
             model.addAttribute("messageType", "success");
- 
-        } 
-        else{
-            //failed validation
-            model.addAttribute("message", "Des champs sont incorrect ou incomplet.");
+        } else {
+            model.addAttribute("message", "Some fields are incorrect or incomplete.");
             model.addAttribute("messageType", "error");
         }
 
