@@ -9,7 +9,7 @@
     <title>Student</title>
 </head>
 <body>
-    <jsp:include page="header.jsp" flush="true"/>  
+    <li><a href="${request.getContextPath()}/teacher">Emploi du temps</a></li>  
     
     <div class="default-msg ${messageType}">
         <span>${message}</span>
