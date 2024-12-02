@@ -10,7 +10,7 @@
 </head>
 <body>
     <ul>
-                <li><a href="${request.getContextPath()}/student">Evaluation</a></li>
+                <li><a href="${request.getContextPath()}/student/">Emploi du Temps</a></li>
     </ul>
     <div class="default-msg ${messageType}">
         <span>${message}</span>
